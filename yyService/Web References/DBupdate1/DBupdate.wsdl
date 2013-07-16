@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions xmlns:intf="http://ws" xmlns:apachesoap="http://xml.apache.org/xml-soap" xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:impl="http://ws" targetNamespace="http://ws" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsdl:types>
+    <xsd:schema xmlns="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" targetNamespace="http://ws">
+      <xsd:element name="outboundInsertMain">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="index" type="xsd:int" />
+            <xsd:element name="bRdFlag" type="xsd:int" />
+            <xsd:element name="dDate" type="xsd:string" />
+            <xsd:element name="cBatch" type="xsd:string" />
+            <xsd:element name="cInvName" type="xsd:string" />
+            <xsd:element name="cWhCode" type="xsd:string" />
+            <xsd:element name="iQuantity" type="xsd:double" />
+            <xsd:element name="cInvStd" type="xsd:string" />
+            <xsd:element name="cVenName" type="xsd:string" />
+            <xsd:element name="cCode" type="xsd:string" />
+            <xsd:element name="cDepCode" type="xsd:string" />
+            <xsd:element name="cBusType" type="xsd:string" />
+            <xsd:element name="cMaker" type="xsd:string" />
+            <xsd:element name="iPrice" type="xsd:decimal" />
+            <xsd:element name="iUnitCost" type="xsd:double" />
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="outboundInsertMainResponse">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="outboundInsertMainReturn" type="xsd:int" />
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="outboundDeleteMain">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="index" type="xsd:int" />
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="outboundDeleteMainResponse">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="outboundDeleteMainReturn" type="xsd:int" />
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="outboundUpdateMainOrder">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="index" type="xsd:int" />
+            <xsd:element name="cCode" type="xsd:string" />
+            <xsd:element name="dDate" type="xsd:string" />
+            <xsd:element name="cBusType" type="xsd:string" />
+            <xsd:element name="cVenName" type="xsd:string" />
+            <xsd:element name="cMemo" type="xsd:string" />
+            <xsd:element name="cDepName" type="xsd:string" />
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="outboundUpdateMainOrderResponse">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="outboundUpdateMainOrderReturn" type="xsd:int" />
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="outboundUpdateMain">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="index" type="xsd:int" />
+            <xsd:element name="bRdFlag" type="xsd:int" />
+            <xsd:element name="dDate" type="xsd:string" />
+            <xsd:element name="cBatch" type="xsd:string" />
+            <xsd:element name="cInvName" type="xsd:string" />
+            <xsd:element name="iQuantity" type="xsd:double" />
+            <xsd:element name="cInvStd" type="xsd:string" />
+            <xsd:element name="iPrice" type="xsd:decimal" />
+            <xsd:element name="iUnitCost" type="xsd:double" />
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="outboundUpdateMainResponse">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="outboundUpdateMainReturn" type="xsd:int" />
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="test">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="bRdFlag" type="xsd:int" />
+            <xsd:element name="iQuantity" type="xsd:double" />
+            <xsd:element name="inAutoID" type="xsd:int" />
+            <xsd:element name="canOutQuantity" type="xsd:double" />
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="testResponse">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="testReturn" type="xsd:int" />
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+    </xsd:schema>
+  </wsdl:types>
+  <wsdl:message name="outboundUpdateMainResponse">
+    <wsdl:part name="parameters" element="impl:outboundUpdateMainResponse" />
+  </wsdl:message>
+  <wsdl:message name="testResponse">
+    <wsdl:part name="parameters" element="impl:testResponse" />
+  </wsdl:message>
+  <wsdl:message name="outboundInsertMainRequest">
+    <wsdl:part name="parameters" element="impl:outboundInsertMain" />
+  </wsdl:message>
+  <wsdl:message name="testRequest">
+    <wsdl:part name="parameters" element="impl:test" />
+  </wsdl:message>
+  <wsdl:message name="outboundUpdateMainRequest">
+    <wsdl:part name="parameters" element="impl:outboundUpdateMain" />
+  </wsdl:message>
+  <wsdl:message name="outboundUpdateMainOrderRequest">
+    <wsdl:part name="parameters" element="impl:outboundUpdateMainOrder" />
+  </wsdl:message>
+  <wsdl:message name="outboundDeleteMainResponse">
+    <wsdl:part name="parameters" element="impl:outboundDeleteMainResponse" />
+  </wsdl:message>
+  <wsdl:message name="outboundUpdateMainOrderResponse">
+    <wsdl:part name="parameters" element="impl:outboundUpdateMainOrderResponse" />
+  </wsdl:message>
+  <wsdl:message name="outboundInsertMainResponse">
+    <wsdl:part name="parameters" element="impl:outboundInsertMainResponse" />
+  </wsdl:message>
+  <wsdl:message name="outboundDeleteMainRequest">
+    <wsdl:part name="parameters" element="impl:outboundDeleteMain" />
+  </wsdl:message>
+  <wsdl:portType name="DBupdate">
+    <wsdl:operation name="outboundInsertMain">
+      <wsdl:input name="outboundInsertMainRequest" message="impl:outboundInsertMainRequest" />
+      <wsdl:output name="outboundInsertMainResponse" message="impl:outboundInsertMainResponse" />
+    </wsdl:operation>
+    <wsdl:operation name="outboundDeleteMain">
+      <wsdl:input name="outboundDeleteMainRequest" message="impl:outboundDeleteMainRequest" />
+      <wsdl:output name="outboundDeleteMainResponse" message="impl:outboundDeleteMainResponse" />
+    </wsdl:operation>
+    <wsdl:operation name="outboundUpdateMainOrder">
+      <wsdl:input name="outboundUpdateMainOrderRequest" message="impl:outboundUpdateMainOrderRequest" />
+      <wsdl:output name="outboundUpdateMainOrderResponse" message="impl:outboundUpdateMainOrderResponse" />
+    </wsdl:operation>
+    <wsdl:operation name="outboundUpdateMain">
+      <wsdl:input name="outboundUpdateMainRequest" message="impl:outboundUpdateMainRequest" />
+      <wsdl:output name="outboundUpdateMainResponse" message="impl:outboundUpdateMainResponse" />
+    </wsdl:operation>
+    <wsdl:operation name="test">
+      <wsdl:input name="testRequest" message="impl:testRequest" />
+      <wsdl:output name="testResponse" message="impl:testResponse" />
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="DBupdateSoapBinding" type="impl:DBupdate">
+    <wsdlsoap:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="outboundInsertMain">
+      <wsdlsoap:operation soapAction="" />
+      <wsdl:input name="outboundInsertMainRequest">
+        <wsdlsoap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output name="outboundInsertMainResponse">
+        <wsdlsoap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="outboundDeleteMain">
+      <wsdlsoap:operation soapAction="" />
+      <wsdl:input name="outboundDeleteMainRequest">
+        <wsdlsoap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output name="outboundDeleteMainResponse">
+        <wsdlsoap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="outboundUpdateMainOrder">
+      <wsdlsoap:operation soapAction="" />
+      <wsdl:input name="outboundUpdateMainOrderRequest">
+        <wsdlsoap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output name="outboundUpdateMainOrderResponse">
+        <wsdlsoap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="outboundUpdateMain">
+      <wsdlsoap:operation soapAction="" />
+      <wsdl:input name="outboundUpdateMainRequest">
+        <wsdlsoap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output name="outboundUpdateMainResponse">
+        <wsdlsoap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="test">
+      <wsdlsoap:operation soapAction="" />
+      <wsdl:input name="testRequest">
+        <wsdlsoap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output name="testResponse">
+        <wsdlsoap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="DBupdateService">
+    <wsdl:port name="DBupdate" binding="impl:DBupdateSoapBinding">
+      <wsdlsoap:address location="http://192.168.1.128/GuobangWebservice/services/DBupdate" />
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>
