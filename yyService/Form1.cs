@@ -36,6 +36,8 @@ namespace yyService
         //控制线程开停的对象
         public static bool runAble;
 
+        //线程是否运行的标志位
+        public bool isRun;
         //	检测网络链接是否成功的值
         public bool netIsOk = false;
 
@@ -65,15 +67,22 @@ namespace yyService
         //睡眠时间
         int sptime;
 
+        Icon istr, isto;
+
+
         //窗体载入时的操作
         private void Form1_Load(object sender, EventArgs e)
         {
+            istr = new Icon("_start.ico");
+            isto = new Icon("_stop.ico");
+            con = new connect();
             getini();
             this.textBox1.Text = _name;
             this.textBox2.Text = _pwd;
             this.textBox3.Text = _Sip;
             this.textBox4.Text = _Sport;
             runAble = true;
+            isRun = false;
         }
         //读取配置文件
         public void getini()
@@ -122,32 +131,58 @@ namespace yyService
         //开始按钮监听器
         private void button1_Click(object sender, EventArgs e)
         {
+            startService();
+            
+        }
+        //开始子线程函数
+        void startService()
+        {
             checkNet();
             _name = this.textBox1.Text;
             _pwd = this.textBox2.Text;
             _Sip = this.textBox3.Text;
             _Sport = this.textBox4.Text;
-            checkNet();
             if (netIsOk)
             {
+                None.Icon = istr;
+                isRun = true;
                 runAble = true;
-                startService();
+                con.init(_DBname, _table, _ip, _name, _pwd, _Sip, _Sport, sptime);
                 con.runAble = true;
                 newpro = new Thread(new ParameterizedThreadStart(run));
                 newpro.Start(con);
+                this.textBox1.Enabled = false;
+                this.textBox2.Enabled = false;
+                this.textBox3.Enabled = false;
+                this.textBox4.Enabled = false;
                 this.button1.Enabled = false;
                 this.button2.Enabled = true;
                 this.启动ToolStripMenuItem.Enabled = false;
                 this.暂停ToolStripMenuItem.Enabled = true;
             }
-        }
-        //传参对象初始化函数
-        void startService()
-        {
-
-            con.init(_DBname, _table, _ip, _name, _pwd, _Sip, _Sport,sptime);
+            
             //con.setName("同步服务");
         }
+        //停止子线程函数
+        void stopService()
+        {
+            if (isRun)
+            {
+                None.Icon = isto;
+                runAble = false;
+                newpro.Interrupt();
+                this.textBox1.Enabled = true;
+                this.textBox2.Enabled = true;
+                this.textBox3.Enabled = true;
+                this.textBox4.Enabled = true;
+                this.启动ToolStripMenuItem.Enabled = true;
+                this.暂停ToolStripMenuItem.Enabled = false;
+                this.button1.Enabled = true;
+                this.button2.Enabled = false;
+                isRun = false;
+            }
+        }
+
         //	检查网络连接的函数
         public void checkNet()
         {
@@ -189,7 +224,7 @@ namespace yyService
             
             connect a = A as connect;
             //			正式程序段        
-
+            sw.WriteLine("sleeptime:"+a.sleeptime);
             string sqlconnetdata = "Server="+a._IP+";DataBase=" + a._DBname + ";uid=" + a._username + ";pwd=" + a._userpwd;
             //string sqlconnetdata = "Server=192.168.1.112;Initial Catalog=UFDATA_401_2013;User ID=sa;Password=sa";
            // string sqlconnetdata = "Server=192.168.1.112:1433/SQLEXPRESS;Initial Catalog=UFDATA_401_2013;Integrated Security=True";
@@ -284,7 +319,7 @@ namespace yyService
             {
 
                 Console.WriteLine("sql error");
-                MessageBox.Show(e.ToString());
+                MessageBox.Show("本地数据库连接异常");
                 sw.Close();
 
             }
@@ -309,13 +344,7 @@ namespace yyService
         //停止按钮监听器
         private void button2_Click(object sender, EventArgs e)
         {
-            runAble = false;
-            newpro.Interrupt();
-            //newpro.Abort();
-            this.button1.Enabled = true;
-            this.button2.Enabled = false;
-            this.启动ToolStripMenuItem.Enabled = true;
-            this.暂停ToolStripMenuItem.Enabled = false;
+            stopService();
         }
         //最小化按钮监听器
         private void button3_Click(object sender, EventArgs e)
@@ -355,46 +384,23 @@ namespace yyService
         //托盘停止按钮
         private void 暂停ToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (this.button1.Enabled == false)
-            {
-                runAble = false;
-                newpro.Interrupt();
-                //newpro.Abort();
-                this.启动ToolStripMenuItem.Enabled = true;
-                this.暂停ToolStripMenuItem.Enabled = false;
-                this.button1.Enabled = true;
-                this.button2.Enabled = false;
-            }
+            stopService();
         }
         //托盘退出按钮
         private void 退出ToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            runAble = false;
-            newpro.Interrupt();
+            if (isRun)
+            {
+                runAble = false;
+                newpro.Interrupt();
+            }
             this.Close();
         }
 
         //托盘启动按钮
         private void 启动ToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            checkNet();
-            _name = this.textBox1.Text;
-            _pwd = this.textBox2.Text;
-            _Sip = this.textBox3.Text;
-            _Sport = this.textBox4.Text;
-            checkNet();
-            if (netIsOk)
-            {
-                runAble = true;
-                startService();
-                con.runAble = true;
-                newpro = new Thread(new ParameterizedThreadStart(run));
-                newpro.Start(con);
-                this.button1.Enabled = false;
-                this.button2.Enabled = true;
-                this.启动ToolStripMenuItem.Enabled = false;
-               this.暂停ToolStripMenuItem.Enabled = true;
-            }
+            startService();
             
         }
 
@@ -403,7 +409,12 @@ namespace yyService
         {
             //this.None.ContextMenuStrip = contextMenuStrip1;
             if (e.Button == MouseButtons.Left)
+            {
+                this.TopMost = true;
                 this.Show();
+                this.WindowState = FormWindowState.Normal;
+                this.TopMost = false;
+            }
         }
 
         private void contextMenuStrip1_Opening(object sender, CancelEventArgs e)
@@ -418,9 +429,13 @@ namespace yyService
         //窗体关闭按钮
         private void Form1_FormClosed(object sender, FormClosedEventArgs e)
         {
-            runAble = false;
-            newpro.Interrupt();
-            this.Close();
+            if (isRun)
+            {
+                runAble = false;
+                newpro.Interrupt();
+            }
+            contextMenuStrip1.Close();
+            //this.Close();
         }
 
        
