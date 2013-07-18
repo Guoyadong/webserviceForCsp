@@ -1,0 +1,10 @@
+CREATE TRIGGER [RdRecords_delete] ON [dbo].[RdRecords] 
+AFTER DELETE
+AS
+DECLARE @index int,@RdRecordID int,@bRdFlag int
+
+select @index=AutoID,@RdRecordID=ID from deleted
+select @bRdFlag=bRdFlag from RdRecord where ID=@RdRecordID
+
+insert into UFDATA_401_2013.dbo.RdRecords_Temp (RdRecordsID,RdRecordID,bRdFlag,Operation) values(@index,@RdRecordID,
+@bRdFlag,2)

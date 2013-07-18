@@ -114,6 +114,18 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <None Include="RdRecord.jlw">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="RdRecords_D.jlw">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="RdRecords_I.jlw">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="RdRecords_U.jlw">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="Web References\DBupdate1\DBupdate.wsdl" />
     <None Include="Web References\DBupdate1\Reference.map">
       <Generator>MSDiscoCodeGenerator</Generator>

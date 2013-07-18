@@ -4,7 +4,7 @@
   <table>RdRecords_Temp</table>
   <name>sa</name>
   <password>sa</password>
-  <ip>localhost</ip>
+  <ip>192.168.1.123</ip>
   <port>1433</port>
   <serverIp>192.168.1.128</serverIp>
   <serverPort>80</serverPort>

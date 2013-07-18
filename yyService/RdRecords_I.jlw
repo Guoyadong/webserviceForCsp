@@ -1,0 +1,32 @@
+CREATE TRIGGER [RdRecords_insert] ON [dbo].[RdRecords] 
+AFTER INSERT
+AS
+DECLARE @ID int,@index int,@bRdFlag int,@dDate datetime,@cBatch varchar(20),@cInvCode varchar(20)
+,@cInvName varchar(60),@cWhCode varchar(10),@iQuantity float,@cInvStd varchar(60),@cVenCode varchar(20)
+,@cCode varchar(30),@cDepCode varchar(12),@cBusType varchar(8),@cMaker varchar(20),@iPrice money
+,@dateString varchar(10),@cVouchCode varchar(10),@canOutQuantity float,@inAutoID int,@iUnitCost float
+,@cVenName varchar(98),@cDepName varchar(20),@cMemo varchar(60)
+
+select @ID=ID,@index=AutoID,@cBatch=cBatch,@cInvCode=cInvCode,@iQuantity=iQuantity,@iPrice=iPrice,
+@cVouchCode=cVouchCode,@iUnitCost=iUnitCost from inserted
+select @bRdFlag=bRdFlag,@dDate=dDate,@cCode=cCode,@cBusType=cBusType,@cWhCode=cWhCode,@cMaker=cMaker,
+@cVenCode=cVenCode,@cDepCode=cDepCode,@cMemo=cMemo from RdRecord where ID =@ID
+select @cVenName=cVenName from vendor where cVenCode=@cVenCode
+select @cDepName=cDepName from Department where cDepCode=@cDepCode
+select @cInvName=cInvName,@cInvStd=cInvStd from Inventory where cInvCode=@cInvCode
+select @cCode=cCode from RdRecord where ID=@ID
+set @dateString=convert(varchar(10),@dDate,23)
+set @inAutoID=0
+select @canOutQuantity=0.0
+if @bRdFlag=0
+begin
+set @inAutoID=convert(int,@cVouchCode)
+select @canOutQuantity=(iQuantity-iSOutQuantity) from RdRecords where AutoID=@inAutoID
+if @iQuantity>@canOutQuantity
+return
+end
+
+insert into UFDATA_401_2013.dbo.RdRecords_Temp (RdRecordsID,RdRecordID,bRdFlag,cCode,cMaker,dDate,cBusType
+,cVenName,cMemo,cDepName,cInvName,cInvStd,cBatch,iQuantity,iUnitCost,iPrice,Operation) values(@index,@ID,@bRdFlag
+,@cCode,@cMaker,@dateString,@cBusType,@cVenName,@cMemo,@cDepName,@cInvName,@cInvStd,@cBatch,@iQuantity,@iUnitCost
+,@iPrice,1)

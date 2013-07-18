@@ -1,0 +1,25 @@
+CREATE TRIGGER [RdRecords_update] ON [dbo].[RdRecords] 
+AFTER UPDATE
+AS
+DECLARE @ID int,@index int,@bRdFlag int,@dDate datetime,@cBatch varchar(20),@cInvCode varchar(20),@cInvName varchar(60),
+@iQuantity float,@cInvStd varchar(60),@iPrice money,@dateString varchar(10),@inAutoID int,@canOutQuantity float,
+@cVouchCode varchar(10),@deliQuantity float,@iUnitCost float
+select @ID=ID,@index=AutoID,@cBatch=cBatch,@cInvCode=cInvCode,@iQuantity=iQuantity,@iPrice=iPrice,
+@cVouchCode=cVouchCode,@iUnitCost=iUnitCost from inserted
+select @deliQuantity=iQuantity from deleted
+select @bRdFlag=bRdFlag,@dDate=dDate from RdRecord where ID =@ID
+select @cInvName=cInvName,@cInvStd=cInvStd from Inventory where cInvCode=@cInvCode
+set @dateString=convert(varchar(10),@dDate,23)
+set @inAutoID=0
+select @canOutQuantity=0.0
+if @bRdFlag=0
+begin
+set @inAutoID=convert(int,@cVouchCode)
+select @canOutQuantity=(iQuantity-iSOutQuantity) from RdRecords where AutoID=@inAutoID
+if (@iQuantity-@deliQuantity)>@canOutQuantity
+return
+end
+
+insert into UFDATA_401_2013.dbo.RdRecords_Temp (RdRecordsID,RdRecordID,bRdFlag,dDate,cBatch,cInvName,iQuantity
+,cInvStd,iPrice,iUnitCost,Operation) values(@index,@ID,@bRdFlag,@dateString,@cBatch,@cInvName,@iQuantity,@cInvStd
+,@iPrice,@iUnitCost,0)

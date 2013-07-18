@@ -19,6 +19,7 @@ using System.Text;
 using System.Runtime.InteropServices;
 
 
+
 namespace yyService
 {
 
@@ -71,19 +72,36 @@ namespace yyService
         //睡眠时间
         int sptime;
 
+        //图标对象
         Icon istr, isto;
-
-
+        
+        //检查网络连接的引入函数
         [DllImport("wininet.dll")]
         public static extern bool InternetGetConnectedState(ref int dwFlag, int dwReserved);
+
+        //数据库操作
+        SqlConnection sc1 = null;
+        SqlConnection sc2 = null;
+        SqlConnection sc3 = null;
+ 
+        //	数据库连接状态
+        SqlCommand scd1 = null;
+        SqlCommand scd2 = null;
+        SqlCommand scd3 = null;
+        //数据库执行结果
+        SqlDataReader sdr1 = null;
+        SqlDataReader sdr2 = null;
+
 
         //窗体载入时的操作
         private void Form1_Load(object sender, EventArgs e)
         {
+            
             istr = new Icon("播放2.ico");
             isto = new Icon("停止2.ico");
             con = new connect();
             getini();
+            DBinit();
             this.textBox1.Text = _name;
             this.textBox2.Text = _pwd;
             this.textBox3.Text = _Sip;
@@ -191,6 +209,72 @@ namespace yyService
             }
         }
 
+        //检查用友端是否有新库添加，有的话新建触发器
+        void DBinit()
+        {
+            string con = "Server=" + _ip + ";DataBase=JLWSYN;uid=" + _name + ";pwd=" + _pwd;
+            string query = "select name from master.dbo.sysdatabases where name like 'UFDATA%' and name not in (select name from JLWSYN.dbo.ACCOUNT_TRIGGERED)";
+            sc1 = new SqlConnection(con);
+            sc1.Open();
+            scd1 = new SqlCommand(query, sc1);
+            sdr1 = scd1.ExecuteReader();
+            StreamReader sr;
+            string que2=null;
+            string name=null;
+            string con2=null;
+            
+            
+            
+
+            while (sdr1.Read())
+            {
+                sr = new StreamReader("RdRecord.jlw");
+                que2 = sr.ReadToEnd();
+                name = sdr1["name"].ToString();
+                con2 = "Server=" + _ip + ";DataBase="+name+";uid=" + _name + ";pwd=" + _pwd;
+                sc2 = new SqlConnection(con2);
+                sc2.Open();
+                scd2 = new SqlCommand(que2, sc2);
+                scd2.ExecuteNonQuery();
+                
+                sr.Close();
+
+                sr = new StreamReader("RdRecords_I.jlw");
+                que2 = sr.ReadToEnd();
+                scd2 = new SqlCommand(que2, sc2);
+                scd2.ExecuteNonQuery();
+                sr.Close();
+
+                sr = new StreamReader("RdRecords_D.jlw");
+                que2 = sr.ReadToEnd();
+                scd2 = new SqlCommand(que2, sc2);
+                scd2.ExecuteNonQuery();
+                sr.Close();
+
+                sr = new StreamReader("RdRecords_U.jlw");
+                que2 = sr.ReadToEnd();
+                scd2 = new SqlCommand(que2, sc2);
+                scd2.ExecuteNonQuery();
+                sr.Close();
+                
+                sc2.Close();
+
+                sc3 = new SqlConnection(con);
+                sc3.Open();
+                string que = "insert JLWSYN.dbo.ACCOUNT_TRIGGERED (name) values ('" + name + "')";
+                scd3 = new SqlCommand(que, sc3);
+                scd3.ExecuteNonQuery();
+                sc3.Close();
+            }
+            //string con1 = "Server=" + _ip + ";DataBase=;uid=" + _name + ";pwd=" + _pwd;
+            //string query1 = "SELECT Name FROM ACCOUNT_TRIGGERED ORDER BY Name";
+            //sc2 = new SqlConnection();
+            sdr1.Close();
+            sc1.Close();
+            //sc2.Close();
+            
+        }
+
         //	检查网络连接的函数
         public void checkNet()
         {
@@ -208,12 +292,12 @@ namespace yyService
                 catch (WebException e)
                 {
                     netIsOk = false;
-                    MessageBox.Show("服务器未开启");
+                    MessageBox.Show("服务器未开启。请检查服务器电脑网络连接，并查看服务是否开启！");
                 }
             }
             else
             {
-                MessageBox.Show("未连接网络");
+                MessageBox.Show("未连接网络。请连接好网络后再尝试打开服务！");
             }
         }
 
@@ -320,7 +404,7 @@ namespace yyService
             {
 
                 Console.WriteLine("sql error");
-                MessageBox.Show("本地数据库连接异常");
+                MessageBox.Show("本地数据库连接异常！请检查数据库服务是否开启，并检查用户名密码正确输入！");
                 sw.Close();
 
             }
