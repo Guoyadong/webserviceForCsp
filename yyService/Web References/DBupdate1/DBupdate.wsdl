@@ -30,17 +30,25 @@
           </xsd:sequence>
         </xsd:complexType>
       </xsd:element>
-      <xsd:element name="outboundDeleteMain">
+      <xsd:element name="outboundUpdateMain">
         <xsd:complexType>
           <xsd:sequence>
             <xsd:element name="index" type="xsd:int" />
+            <xsd:element name="bRdFlag" type="xsd:int" />
+            <xsd:element name="dDate" type="xsd:string" />
+            <xsd:element name="cBatch" type="xsd:string" />
+            <xsd:element name="cInvName" type="xsd:string" />
+            <xsd:element name="iQuantity" type="xsd:double" />
+            <xsd:element name="cInvStd" type="xsd:string" />
+            <xsd:element name="iPrice" type="xsd:decimal" />
+            <xsd:element name="iUnitCost" type="xsd:double" />
           </xsd:sequence>
         </xsd:complexType>
       </xsd:element>
-      <xsd:element name="outboundDeleteMainResponse">
+      <xsd:element name="outboundUpdateMainResponse">
         <xsd:complexType>
           <xsd:sequence>
-            <xsd:element name="outboundDeleteMainReturn" type="xsd:int" />
+            <xsd:element name="outboundUpdateMainReturn" type="xsd:int" />
           </xsd:sequence>
         </xsd:complexType>
       </xsd:element>
@@ -64,37 +72,22 @@
           </xsd:sequence>
         </xsd:complexType>
       </xsd:element>
-      <xsd:element name="outboundUpdateMain">
+      <xsd:element name="outboundDeleteMain">
         <xsd:complexType>
           <xsd:sequence>
             <xsd:element name="index" type="xsd:int" />
-            <xsd:element name="bRdFlag" type="xsd:int" />
-            <xsd:element name="dDate" type="xsd:string" />
-            <xsd:element name="cBatch" type="xsd:string" />
-            <xsd:element name="cInvName" type="xsd:string" />
-            <xsd:element name="iQuantity" type="xsd:double" />
-            <xsd:element name="cInvStd" type="xsd:string" />
-            <xsd:element name="iPrice" type="xsd:decimal" />
-            <xsd:element name="iUnitCost" type="xsd:double" />
           </xsd:sequence>
         </xsd:complexType>
       </xsd:element>
-      <xsd:element name="outboundUpdateMainResponse">
+      <xsd:element name="outboundDeleteMainResponse">
         <xsd:complexType>
           <xsd:sequence>
-            <xsd:element name="outboundUpdateMainReturn" type="xsd:int" />
+            <xsd:element name="outboundDeleteMainReturn" type="xsd:int" />
           </xsd:sequence>
         </xsd:complexType>
       </xsd:element>
       <xsd:element name="test">
-        <xsd:complexType>
-          <xsd:sequence>
-            <xsd:element name="bRdFlag" type="xsd:int" />
-            <xsd:element name="iQuantity" type="xsd:double" />
-            <xsd:element name="inAutoID" type="xsd:int" />
-            <xsd:element name="canOutQuantity" type="xsd:double" />
-          </xsd:sequence>
-        </xsd:complexType>
+        <xsd:complexType />
       </xsd:element>
       <xsd:element name="testResponse">
         <xsd:complexType>
@@ -117,11 +110,11 @@
   <wsdl:message name="testRequest">
     <wsdl:part name="parameters" element="impl:test" />
   </wsdl:message>
-  <wsdl:message name="outboundUpdateMainRequest">
-    <wsdl:part name="parameters" element="impl:outboundUpdateMain" />
-  </wsdl:message>
   <wsdl:message name="outboundUpdateMainOrderRequest">
     <wsdl:part name="parameters" element="impl:outboundUpdateMainOrder" />
+  </wsdl:message>
+  <wsdl:message name="outboundUpdateMainRequest">
+    <wsdl:part name="parameters" element="impl:outboundUpdateMain" />
   </wsdl:message>
   <wsdl:message name="outboundDeleteMainResponse">
     <wsdl:part name="parameters" element="impl:outboundDeleteMainResponse" />
@@ -140,17 +133,17 @@
       <wsdl:input name="outboundInsertMainRequest" message="impl:outboundInsertMainRequest" />
       <wsdl:output name="outboundInsertMainResponse" message="impl:outboundInsertMainResponse" />
     </wsdl:operation>
-    <wsdl:operation name="outboundDeleteMain">
-      <wsdl:input name="outboundDeleteMainRequest" message="impl:outboundDeleteMainRequest" />
-      <wsdl:output name="outboundDeleteMainResponse" message="impl:outboundDeleteMainResponse" />
+    <wsdl:operation name="outboundUpdateMain">
+      <wsdl:input name="outboundUpdateMainRequest" message="impl:outboundUpdateMainRequest" />
+      <wsdl:output name="outboundUpdateMainResponse" message="impl:outboundUpdateMainResponse" />
     </wsdl:operation>
     <wsdl:operation name="outboundUpdateMainOrder">
       <wsdl:input name="outboundUpdateMainOrderRequest" message="impl:outboundUpdateMainOrderRequest" />
       <wsdl:output name="outboundUpdateMainOrderResponse" message="impl:outboundUpdateMainOrderResponse" />
     </wsdl:operation>
-    <wsdl:operation name="outboundUpdateMain">
-      <wsdl:input name="outboundUpdateMainRequest" message="impl:outboundUpdateMainRequest" />
-      <wsdl:output name="outboundUpdateMainResponse" message="impl:outboundUpdateMainResponse" />
+    <wsdl:operation name="outboundDeleteMain">
+      <wsdl:input name="outboundDeleteMainRequest" message="impl:outboundDeleteMainRequest" />
+      <wsdl:output name="outboundDeleteMainResponse" message="impl:outboundDeleteMainResponse" />
     </wsdl:operation>
     <wsdl:operation name="test">
       <wsdl:input name="testRequest" message="impl:testRequest" />
@@ -168,12 +161,12 @@
         <wsdlsoap:body use="literal" />
       </wsdl:output>
     </wsdl:operation>
-    <wsdl:operation name="outboundDeleteMain">
+    <wsdl:operation name="outboundUpdateMain">
       <wsdlsoap:operation soapAction="" />
-      <wsdl:input name="outboundDeleteMainRequest">
+      <wsdl:input name="outboundUpdateMainRequest">
         <wsdlsoap:body use="literal" />
       </wsdl:input>
-      <wsdl:output name="outboundDeleteMainResponse">
+      <wsdl:output name="outboundUpdateMainResponse">
         <wsdlsoap:body use="literal" />
       </wsdl:output>
     </wsdl:operation>
@@ -186,12 +179,12 @@
         <wsdlsoap:body use="literal" />
       </wsdl:output>
     </wsdl:operation>
-    <wsdl:operation name="outboundUpdateMain">
+    <wsdl:operation name="outboundDeleteMain">
       <wsdlsoap:operation soapAction="" />
-      <wsdl:input name="outboundUpdateMainRequest">
+      <wsdl:input name="outboundDeleteMainRequest">
         <wsdlsoap:body use="literal" />
       </wsdl:input>
-      <wsdl:output name="outboundUpdateMainResponse">
+      <wsdl:output name="outboundDeleteMainResponse">
         <wsdlsoap:body use="literal" />
       </wsdl:output>
     </wsdl:operation>

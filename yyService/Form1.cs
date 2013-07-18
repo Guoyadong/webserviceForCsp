@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
-
+using yyService.DBupdate1;
 using System.Text;
 using System.Windows.Forms;
 using System.Net;
@@ -13,6 +13,10 @@ using System.Data.SqlClient;
 using yyService.DBupdate1;
 using System.Xml;
 using System.IO;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Runtime.InteropServices;
 
 
 namespace yyService
@@ -70,11 +74,14 @@ namespace yyService
         Icon istr, isto;
 
 
+        [DllImport("wininet.dll")]
+        public static extern bool InternetGetConnectedState(ref int dwFlag, int dwReserved);
+
         //窗体载入时的操作
         private void Form1_Load(object sender, EventArgs e)
         {
-            istr = new Icon("_start.ico");
-            isto = new Icon("_stop.ico");
+            istr = new Icon("播放2.ico");
+            isto = new Icon("停止2.ico");
             con = new connect();
             getini();
             this.textBox1.Text = _name;
@@ -83,6 +90,7 @@ namespace yyService
             this.textBox4.Text = _Sport;
             runAble = true;
             isRun = false;
+            startService();
         }
         //读取配置文件
         public void getini()
@@ -186,33 +194,26 @@ namespace yyService
         //	检查网络连接的函数
         public void checkNet()
         {
-            Ping p = new Ping();//创建Ping对象p
-            PingReply pr = p.Send(_Sip);//向指定IP或者主机名的计算机发送ICMP协议的ping数据包
-            if (pr.Status == IPStatus.Success)//如果ping成功
+            int flag=0;
+            
+            netIsOk = InternetGetConnectedState(ref flag,0);
+            if (netIsOk)
             {
-                Console.WriteLine("网络连接成功, 执行下面任务...");
-                netIsOk = true;
+                DBupdateService a = new DBupdateService(_Sip + ":" + _Sport);
+                try
+                {
+                    int i = a.test();
+                    netIsOk = true;
+                }
+                catch (WebException e)
+                {
+                    netIsOk = false;
+                    MessageBox.Show("服务器未开启");
+                }
             }
             else
             {
-                int times = 0;//重新连接次数;
-                do
-                {
-                    if (times >= 1)
-                    {
-                        MessageBox.Show("重新尝试连接超过12次,连接失败程序结束");
-                        netIsOk = false;
-                        return;
-                    }
-                    //  Thread.Sleep(5000);//等待十分钟(方便测试的话，你可以改为1000)
-                    pr = p.Send(_Sip);
-                    Console.WriteLine(pr.Status);
-                    times++;
-                }
-                while (pr.Status != IPStatus.Success);
-                 MessageBox.Show("连接成功");
-                netIsOk = true;
-                times = 0;//连接成功，重新连接次数清为0;
+                MessageBox.Show("未连接网络");
             }
         }
 
@@ -307,7 +308,7 @@ namespace yyService
             }
             catch (ThreadInterruptedException e)
             {
-                Console.WriteLine("lalala");
+                Console.WriteLine("interrupt");
                 //MessageBox.Show("zhongduan tuichu");
                 sw.Close();
             }
@@ -424,7 +425,7 @@ namespace yyService
         //托盘帮助按钮
         private void 帮助ToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("开发商：景联文科技有限公司\r\n联系电话：0571-8877xxxx\r\n版本：v1.0");
+            MessageBox.Show("开发商：景联文科技有限公司\r\n联系电话：0571-88942537\r\n版本：v1.0");
         }
         //窗体关闭按钮
         private void Form1_FormClosed(object sender, FormClosedEventArgs e)
