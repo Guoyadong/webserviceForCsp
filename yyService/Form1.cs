@@ -23,17 +23,20 @@ using System.Runtime.InteropServices;
 namespace yyService
 {
 
-    public partial class Form1 : Form
+    public partial class DBsyn : Form
     {
 
-        public Form1()
+        public DBsyn()
         {
             InitializeComponent();
 
 
 
         }
-    
+
+        //信息传递标志
+        public const int IM_closed = 0x0295;
+
         //传参对象
         connect con = null;
         //线程对象
@@ -69,6 +72,7 @@ namespace yyService
 
         //	服务器端口
         String _Sport;
+
         //睡眠时间
         int sptime;
 
@@ -88,6 +92,7 @@ namespace yyService
         SqlCommand scd1 = null;
         SqlCommand scd2 = null;
         SqlCommand scd3 = null;
+
         //数据库执行结果
         SqlDataReader sdr1 = null;
         SqlDataReader sdr2 = null;
@@ -110,6 +115,7 @@ namespace yyService
             isRun = false;
             startService();
         }
+
         //读取配置文件
         public void getini()
         {
@@ -154,12 +160,14 @@ namespace yyService
             }
 
         }
+
         //开始按钮监听器
         private void button1_Click(object sender, EventArgs e)
         {
             startService();
             
         }
+
         //开始子线程函数
         void startService()
         {
@@ -189,6 +197,7 @@ namespace yyService
             
             //con.setName("同步服务");
         }
+
         //停止子线程函数
         void stopService()
         {
@@ -209,69 +218,70 @@ namespace yyService
             }
         }
 
-        //检查用友端是否有新库添加，有的话新建触发器
+        //检查用友端数据库是否有新库添加，有的话新建触发器
         void DBinit()
         {
             string con = "Server=" + _ip + ";DataBase=JLWSYN;uid=" + _name + ";pwd=" + _pwd;
             string query = "select name from master.dbo.sysdatabases where name like 'UFDATA%' and name not in (select name from JLWSYN.dbo.ACCOUNT_TRIGGERED)";
-            sc1 = new SqlConnection(con);
-            sc1.Open();
-            scd1 = new SqlCommand(query, sc1);
-            sdr1 = scd1.ExecuteReader();
-            StreamReader sr;
-            string que2=null;
-            string name=null;
-            string con2=null;
-            
-            
-            
-
-            while (sdr1.Read())
+            try
             {
-                sr = new StreamReader("RdRecord.jlw");
-                que2 = sr.ReadToEnd();
-                name = sdr1["name"].ToString();
-                con2 = "Server=" + _ip + ";DataBase="+name+";uid=" + _name + ";pwd=" + _pwd;
-                sc2 = new SqlConnection(con2);
-                sc2.Open();
-                scd2 = new SqlCommand(que2, sc2);
-                scd2.ExecuteNonQuery();
-                
-                sr.Close();
+                sc1 = new SqlConnection(con);
+                sc1.Open();
+                scd1 = new SqlCommand(query, sc1);
+                sdr1 = scd1.ExecuteReader();
+                StreamReader sr;
+                string que2 = null;
+                string name = null;
+                string con2 = null;
 
-                sr = new StreamReader("RdRecords_I.jlw");
-                que2 = sr.ReadToEnd();
-                scd2 = new SqlCommand(que2, sc2);
-                scd2.ExecuteNonQuery();
-                sr.Close();
+                while (sdr1.Read())
+                {
+                    sr = new StreamReader("RdRecord.jlw");
+                    que2 = sr.ReadToEnd();
+                    name = sdr1["name"].ToString();
+                    con2 = "Server=" + _ip + ";DataBase=" + name + ";uid=" + _name + ";pwd=" + _pwd;
+                    sc2 = new SqlConnection(con2);
+                    sc2.Open();
+                    scd2 = new SqlCommand(que2, sc2);
+                    scd2.ExecuteNonQuery();
+                    sr.Close();
 
-                sr = new StreamReader("RdRecords_D.jlw");
-                que2 = sr.ReadToEnd();
-                scd2 = new SqlCommand(que2, sc2);
-                scd2.ExecuteNonQuery();
-                sr.Close();
+                    sr = new StreamReader("RdRecords_I.jlw");
+                    que2 = sr.ReadToEnd();
+                    scd2 = new SqlCommand(que2, sc2);
+                    scd2.ExecuteNonQuery();
+                    sr.Close();
 
-                sr = new StreamReader("RdRecords_U.jlw");
-                que2 = sr.ReadToEnd();
-                scd2 = new SqlCommand(que2, sc2);
-                scd2.ExecuteNonQuery();
-                sr.Close();
-                
-                sc2.Close();
+                    sr = new StreamReader("RdRecords_D.jlw");
+                    que2 = sr.ReadToEnd();
+                    scd2 = new SqlCommand(que2, sc2);
+                    scd2.ExecuteNonQuery();
+                    sr.Close();
 
-                sc3 = new SqlConnection(con);
-                sc3.Open();
-                string que = "insert JLWSYN.dbo.ACCOUNT_TRIGGERED (name) values ('" + name + "')";
-                scd3 = new SqlCommand(que, sc3);
-                scd3.ExecuteNonQuery();
-                sc3.Close();
+                    sr = new StreamReader("RdRecords_U.jlw");
+                    que2 = sr.ReadToEnd();
+                    scd2 = new SqlCommand(que2, sc2);
+                    scd2.ExecuteNonQuery();
+                    sr.Close();
+
+                    sc2.Close();
+
+                    sc3 = new SqlConnection(con);
+                    sc3.Open();
+                    string que = "insert JLWSYN.dbo.ACCOUNT_TRIGGERED (name) values ('" + name + "')";
+                    scd3 = new SqlCommand(que, sc3);
+                    scd3.ExecuteNonQuery();
+                    sc3.Close();
+                }
+                sdr1.Close();
+                sc1.Close();
             }
-            //string con1 = "Server=" + _ip + ";DataBase=;uid=" + _name + ";pwd=" + _pwd;
-            //string query1 = "SELECT Name FROM ACCOUNT_TRIGGERED ORDER BY Name";
-            //sc2 = new SqlConnection();
-            sdr1.Close();
-            sc1.Close();
-            //sc2.Close();
+            catch(SqlException e)
+            {              
+                MessageBox.Show("用友数据库未能正确连接！\r\n请确保数据库服务开启和网络通畅后再尝试打开程序");
+                //SendMessage(this.Handle, IM_closed, 80, 0);
+                this.Close();
+            }
             
         }
 
@@ -292,12 +302,41 @@ namespace yyService
                 catch (WebException e)
                 {
                     netIsOk = false;
-                    MessageBox.Show("服务器未开启。请检查服务器电脑网络连接，并查看服务是否开启！");
+                    MessageBox.Show("优时服务器未开启。请检查服务器电脑网络连接，并查看服务是否开启！");
+                    //SendMessage(this.Handle, IM_closed, 80, 0);
                 }
             }
             else
             {
                 MessageBox.Show("未连接网络。请连接好网络后再尝试打开服务！");
+            }
+        }
+
+        //消息发送函数
+        [DllImport("User32.dll", EntryPoint = "SendMessage")]
+        private static extern int SendMessage(
+               IntPtr hWnd,　　　// handle to destination window
+               int Msg,　　　 // message
+               int wParam,　// first message parameter
+               int lParam // second message parameter
+         );
+
+        //消息接收函数
+        protected override void DefWndProc(ref System.Windows.Forms.Message m)
+        {
+            switch (m.Msg)
+            {
+                case IM_closed:
+                    ///string与MFC中的CString的Format函数的使用方法有所不同
+                    
+                    string message = string.Format("收到消息!参数为:{0},{1}", m.WParam, m.LParam);
+                    MessageBox.Show(message);///显示一个消息框
+                    Thread.Sleep(10000);
+                    startService();
+                    break;
+                default:
+                    base.DefWndProc(ref m);///调用基类函数处理非自定义消息。
+                    break;
             }
         }
 
@@ -349,7 +388,7 @@ namespace yyService
                                     break;
                                 case 1:
                                     sw.WriteLine("引用2号接口");
-                                    did = a.dbd.outboundInsertMain((int)a.sqlread["RdRecordsID"], (int)a.sqlread["bRdFlag"], a.sqlread["dDate"].ToString(), a.sqlread["cBatch"].ToString(), a.sqlread["cInvName"].ToString(), a.sqlread["cWhCode"].ToString(), (double)a.sqlread["iQuantity"], a.sqlread["cInvStd"].ToString(), a.sqlread["cVenName"].ToString(), a.sqlread["cCode"].ToString(), a.sqlread["cDepName"].ToString(), a.sqlread["cBusType"].ToString(), a.sqlread["cMaker"].ToString(), (decimal)a.sqlread["iPrice"], (double)a.sqlread["iUnitCost"]);
+                                    did = a.dbd.outboundInsertMain((int)a.sqlread["RdRecordsID"], (int)a.sqlread["bRdFlag"], a.sqlread["dDate"].ToString(), a.sqlread["cBatch"].ToString(), a.sqlread["cInvName"].ToString(), a.sqlread["cAcc_Name"].ToString(), (double)a.sqlread["iQuantity"], a.sqlread["cInvStd"].ToString(), a.sqlread["cVenName"].ToString(), a.sqlread["cCode"].ToString(), a.sqlread["cDepName"].ToString(), a.sqlread["cBusType"].ToString(), a.sqlread["cMaker"].ToString(), (decimal)a.sqlread["iPrice"], (double)a.sqlread["iUnitCost"]);
                                     sw.WriteLine("2号接口引用结束");
                                     break;
                                 case 2:
@@ -400,13 +439,17 @@ namespace yyService
             {
                 
             }
+            catch(WebException e)
+            {
+                SendMessage(this.Handle, IM_closed, 80, 0);
+            }
             catch (SqlException e)
             {
 
                 Console.WriteLine("sql error");
                 MessageBox.Show("本地数据库连接异常！请检查数据库服务是否开启，并检查用户名密码正确输入！");
                 sw.Close();
-
+                SendMessage(this.Handle, IM_closed, 80, 0);
             }
             catch (Exception e)
             {
@@ -431,6 +474,7 @@ namespace yyService
         {
             stopService();
         }
+
         //最小化按钮监听器
         private void button3_Click(object sender, EventArgs e)
         {
@@ -471,6 +515,7 @@ namespace yyService
         {
             stopService();
         }
+
         //托盘退出按钮
         private void 退出ToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -511,6 +556,7 @@ namespace yyService
         {
             MessageBox.Show("开发商：景联文科技有限公司\r\n联系电话：0571-88942537\r\n版本：v1.0");
         }
+
         //窗体关闭按钮
         private void Form1_FormClosed(object sender, FormClosedEventArgs e)
         {

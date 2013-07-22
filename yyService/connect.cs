@@ -53,22 +53,19 @@ namespace yyService
         
         //数据库执行结果
        public SqlDataReader sqlread = null;
-        
-       
-         
+               
         //	执行许可
         public bool runAble = true;
 
         //	关闭许可
         public bool closeAble = false;
 
-
         //	间隔时间
         public int sleeptime;
 
         //	对象申请，此为默认初始化
 
-        //	带参数的对象申请
+        //	不带参数的对象申请
         public connect()
         {
             //	 _DBname="UFDATA_401_2013";
@@ -96,9 +93,7 @@ namespace yyService
 	_dbURL="jdbc:sqlserver://"+_IP+";DatabaseName="+_DBname;
     dbd=new DBupdate1.DBupdateService(_SIp+":"+_SPort);
 	sleeptime=sptime;
-}
-
-    
+}  
 
     /// <summary>
     /// 初始化类内申明的对象
@@ -125,7 +120,7 @@ namespace yyService
         sleeptime = sptime;
     }
 
-        //	线程运行程序
+        //	线程运行程序。已废弃
 //        public void run(){
 
 
