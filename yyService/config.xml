@@ -1,12 +1,12 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <dataconfig>
-  <DBname>UFDATA_401_2013</DBname>
+  <DBname>JLWSYN</DBname>
   <table>RdRecords_Temp</table>
   <name>sa</name>
   <password>sa</password>
   <ip>192.168.1.123</ip>
   <port>1433</port>
-  <serverIp>192.168.1.127</serverIp>
+  <serverIp>192.168.1.128</serverIp>
   <serverPort>80</serverPort>
   <sleeptime>10000</sleeptime>
 </dataconfig>

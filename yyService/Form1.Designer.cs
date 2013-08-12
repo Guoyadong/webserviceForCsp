@@ -148,7 +148,7 @@
             // 
             this.None.ContextMenuStrip = this.contextMenuStrip1;
             this.None.Icon = ((System.Drawing.Icon)(resources.GetObject("None.Icon")));
-            this.None.Text = "notifyIcon1";
+            this.None.Text = "新昌国邦数据同步";
             this.None.Visible = true;
             this.None.MouseClick += new System.Windows.Forms.MouseEventHandler(this.notifyIcon1_MouseClick);
             this.None.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.None_MouseDoubleClick);
@@ -167,28 +167,28 @@
             // 启动ToolStripMenuItem
             // 
             this.启动ToolStripMenuItem.Name = "启动ToolStripMenuItem";
-            this.启动ToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.启动ToolStripMenuItem.Size = new System.Drawing.Size(94, 22);
             this.启动ToolStripMenuItem.Text = "启动";
             this.启动ToolStripMenuItem.Click += new System.EventHandler(this.启动ToolStripMenuItem_Click);
             // 
             // 暂停ToolStripMenuItem
             // 
             this.暂停ToolStripMenuItem.Name = "暂停ToolStripMenuItem";
-            this.暂停ToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.暂停ToolStripMenuItem.Size = new System.Drawing.Size(94, 22);
             this.暂停ToolStripMenuItem.Text = "停止";
             this.暂停ToolStripMenuItem.Click += new System.EventHandler(this.暂停ToolStripMenuItem_Click);
             // 
             // 帮助ToolStripMenuItem
             // 
             this.帮助ToolStripMenuItem.Name = "帮助ToolStripMenuItem";
-            this.帮助ToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.帮助ToolStripMenuItem.Size = new System.Drawing.Size(94, 22);
             this.帮助ToolStripMenuItem.Text = "帮助";
             this.帮助ToolStripMenuItem.Click += new System.EventHandler(this.帮助ToolStripMenuItem_Click);
             // 
             // 退出ToolStripMenuItem
             // 
             this.退出ToolStripMenuItem.Name = "退出ToolStripMenuItem";
-            this.退出ToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.退出ToolStripMenuItem.Size = new System.Drawing.Size(94, 22);
             this.退出ToolStripMenuItem.Text = "退出";
             this.退出ToolStripMenuItem.Click += new System.EventHandler(this.退出ToolStripMenuItem_Click);
             // 
@@ -212,7 +212,10 @@
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
             this.Name = "DBsyn";
+            this.ShowInTaskbar = false;
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "新昌国邦数据同步";
+            this.WindowState = System.Windows.Forms.FormWindowState.Minimized;
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.Form1_FormClosed);
             this.Load += new System.EventHandler(this.Form1_Load);
             this.SizeChanged += new System.EventHandler(this.Form1_SizeChanged);

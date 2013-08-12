@@ -1,16 +1,84 @@
-CREATE TRIGGER [RdRecord_update] ON [dbo].[RdRecord] 
+﻿CREATE TRIGGER [RdRecord_update] ON [dbo].[RdRecord] 
 AFTER UPDATE
 AS
 DECLARE @cCode varchar(30),@dDate datetime,@index int,@ID int,@dateString varchar(10),@cVenName varchar(98),
 @cMemo varchar(60),@cVenCode varchar(20),@cDepCode varchar(12),@cDepName varchar(20),@cBusType varchar(8)
-,@bRdFlag int,@cMaker varchar(20)
+,@bRdFlag int,@cMaker varchar(20),@cWhCode varchar(10),@cVouchType varchar(2),@cRdCode varchar(5),@cAcc_Name varchar(40)
+,@DatabaseName varchar(128),@cRdName varchar(12),@cVouchName varchar(20),@CKH varchar(2),@cCusCode varchar(20),
+@cCusName varchar(98)
 select @bRdFlag=bRdFlag,@cCode=cCode,@dDate=dDate,@ID=ID,@cVenCode=cVenCode,@cMemo=cMemo,@cDepCode=cDepCode
-,@cBusType=cBusType,@cMaker=cMaker from inserted
+,@cBusType=cBusType,@cMaker=cMaker,@cWhCode=cWhCode,@cVouchType=cVouchType,@cRdCode=cRdCode,@cCusCode=cCusCode from inserted
 set @index=(select top 1 AutoID from RdRecords where ID=@ID)
 set @dateString=convert(varchar(10),@dDate,23)
 select @cVenName=cVenName from vendor where cVenCode=@cVenCode
+select @cCusName=cCusName from Customer where cCusCode=@cCusCode
 select @cDepName=cDepName from Department where cDepCode=@cDepCode
-insert into UFDATA_401_2013.dbo.RdRecords_Temp (RdRecordsID,RdRecordID,bRdFlag,cCode,cMaker,dDate,cBusType,cVenName
-,cMemo,cDepName,Operation) values(@index,@ID,@bRdFlag,@cCode,@cMaker,@dateString,@cBusType,@cVenName,@cMemo
-,@cDepName,3)
+Select @DatabaseName=Name From Master.dbo.SysDataBases Where DbId=(Select Dbid From Master.dbo.SysProcesses Where Spid = @@spid)
+Select @cAcc_Name=cAcc_Name from UFSystem.dbo.UA_Account where cAcc_Id=substring(@DatabaseName,8,3)
+Select @cAcc_Name=GSMC,@CKH=CKH from JLWSYN.dbo.GSDZB where cAcc_Name=@cAcc_Name
+if @cWhcode='06'
+return
 
+select @cRdName=cRdName from Rd_Style where cRdCode=@cRdCode
+select @cVouchName=cVouchName from VouchType where cVouchType=@cVouchType
+
+if @cVouchName='采购入库单'
+begin
+if @cRdName!='采购入库'
+return
+if @cRdName='采购入库'
+begin
+if @cVenName like '%新昌国邦%' or @cVenName like '%浙江国邦%' or @cVenName like '%国邦医药%'
+return
+select @cBusType='采购入库'
+end
+end
+
+if @cVouchName='产成品入库单'
+begin
+if @cRdName!='车间入库'
+return
+if @cRdName='车间入库'
+select @cBusType='产品入库'
+end
+
+if @cVouchName='其他入库单'
+begin
+if @cRdName!='其他入库'
+return
+if @cRdName='其他入库'
+select @cBusType='产品入库'
+end
+
+if @cVouchName='销售出库单'
+begin
+if @cRdName!='销售出库'
+return
+if @cRdName='销售出库'
+begin
+if @cCusName like '%新昌国邦%' or @cCusName like '%浙江国邦%' or @cCusName like '%国邦医药%'
+begin
+return
+end
+return
+end
+end
+
+if @cVouchName='材料出库单'
+begin
+if @cRdName!='车间领用'
+return
+if @cRdName='车间领用'
+select @cBusType='生产领料'
+end
+
+if @cVouchName='其他出库单'
+begin
+if @cRdName!='其他出库'
+return
+if @cRdName='其他出库'
+select @cBusType='其他出库'
+end
+insert into JLWSYN.dbo.RdRecords_Temp (RdRecordsID,RdRecordID,bRdFlag,cCode,cMaker,dDate,cBusType,cVenName
+,cMemo,cDepName,Operation,cAcc_Name,CKH,cCusName,cVouchName,cRdName) values(@index,@ID,@bRdFlag,@cCode,@cMaker,@dateString,@cBusType,@cVenName,@cMemo
+,@cDepName,3,@cAcc_Name,@CKH,@cCusName,@cVouchName,@cRdName)

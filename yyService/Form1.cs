@@ -10,15 +10,10 @@ using System.Net;
 using System.Net.NetworkInformation;
 using System.Threading;
 using System.Data.SqlClient;
-using yyService.DBupdate1;
 using System.Xml;
 using System.IO;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Runtime.InteropServices;
-
-
 
 namespace yyService
 {
@@ -39,8 +34,10 @@ namespace yyService
 
         //传参对象
         connect con = null;
+
         //线程对象
         Thread newpro;
+
         //控制线程开停的对象
         public static bool runAble;
 
@@ -95,25 +92,26 @@ namespace yyService
 
         //数据库执行结果
         SqlDataReader sdr1 = null;
-        SqlDataReader sdr2 = null;
-
+       // SqlDataReader sdr2 = null;
 
         //窗体载入时的操作
         private void Form1_Load(object sender, EventArgs e)
         {
-            
             istr = new Icon("播放2.ico");
             isto = new Icon("停止2.ico");
             con = new connect();
             getini();
-            DBinit();
             this.textBox1.Text = _name;
             this.textBox2.Text = _pwd;
             this.textBox3.Text = _Sip;
             this.textBox4.Text = _Sport;
             runAble = true;
+            Thread.Sleep(4000);
+            
+            DBinit();
             isRun = false;
             startService();
+            //this.WindowState = FormWindowState.Minimized;
         }
 
         //读取配置文件
@@ -293,11 +291,17 @@ namespace yyService
             netIsOk = InternetGetConnectedState(ref flag,0);
             if (netIsOk)
             {
-                DBupdateService a = new DBupdateService(_Sip + ":" + _Sport);
+                
                 try
                 {
+                    DBupdateService a = new DBupdateService(_Sip + ":" + _Sport);
                     int i = a.test();
                     netIsOk = true;
+                }
+                catch(UriFormatException e)
+                {
+                    Console.WriteLine(_Sip + ":" + _Sport);
+                    MessageBox.Show("优时服务器未开启。请检查服务器电脑网络连接，并查看服务是否开启！");
                 }
                 catch (WebException e)
                 {
@@ -383,26 +387,48 @@ namespace yyService
                             {
                                 case 0:
                                     sw.WriteLine("引用1号接口");
-                                    did = a.dbd.outboundUpdateMain((int)a.sqlread["RdRecordsID"], (int)a.sqlread["bRdFlag"], a.sqlread["dDate"].ToString(), a.sqlread["cBatch"].ToString(), a.sqlread["cInvName"].ToString(), (double)a.sqlread["iQuantity"], a.sqlread["cInvStd"].ToString(), (decimal)a.sqlread["iPrice"], (double)a.sqlread["iUnitCost"]);
+                                    did = a.dbd.outboundUpdateMain((int)a.sqlread["RdRecordsID"], (int)a.sqlread["bRdFlag"], a.sqlread["dDate"].ToString(), a.sqlread["cBatch"].ToString(), a.sqlread["cInvName"].ToString(), (double)a.sqlread["iQuantity"], a.sqlread["cInvStd"].ToString(), (decimal)a.sqlread["iPrice"], (double)a.sqlread["iUnitCost"],a.sqlread["CKH"].ToString());
                                     sw.WriteLine("1号接口引用结束");
                                     break;
                                 case 1:
                                     sw.WriteLine("引用2号接口");
-                                    did = a.dbd.outboundInsertMain((int)a.sqlread["RdRecordsID"], (int)a.sqlread["bRdFlag"], a.sqlread["dDate"].ToString(), a.sqlread["cBatch"].ToString(), a.sqlread["cInvName"].ToString(), a.sqlread["cAcc_Name"].ToString(), (double)a.sqlread["iQuantity"], a.sqlread["cInvStd"].ToString(), a.sqlread["cVenName"].ToString(), a.sqlread["cCode"].ToString(), a.sqlread["cDepName"].ToString(), a.sqlread["cBusType"].ToString(), a.sqlread["cMaker"].ToString(), (decimal)a.sqlread["iPrice"], (double)a.sqlread["iUnitCost"]);
+                                    did = a.dbd.outboundInsertMain(/*(int)a.sqlread["autoID"],*/ (int)a.sqlread["RdRecordsID"], (int)a.sqlread["bRdFlag"], a.sqlread["dDate"].ToString(), a.sqlread["cBatch"].ToString(), a.sqlread["cInvName"].ToString(), a.sqlread["cAcc_Name"].ToString(), (double)a.sqlread["iQuantity"], a.sqlread["cInvStd"].ToString(), a.sqlread["cVenName"].ToString(), a.sqlread["cCode"].ToString(), a.sqlread["cDepName"].ToString(), a.sqlread["cBusType"].ToString(), a.sqlread["cMaker"].ToString(), (decimal)a.sqlread["iPrice"], (double)a.sqlread["iUnitCost"], a.sqlread["cMemo"].ToString(), a.sqlread["CKH"].ToString());
                                     sw.WriteLine("2号接口引用结束");
                                     break;
                                 case 2:
                                     sw.WriteLine("引用3号接口");
-                                    did = a.dbd.outboundDeleteMain((int)a.sqlread["RdRecordsID"]);
+                                    did = a.dbd.outboundDeleteMain((int)a.sqlread["RdRecordsID"], a.sqlread["CKH"].ToString());
                                     sw.WriteLine("3号接口引用结束");
                                     break;
                                 case 3:
                                     sw.WriteLine("引用4号接口");
-                                    did = a.dbd.outboundUpdateMainOrder((int)a.sqlread["RdRecordsID"], a.sqlread["cCode"].ToString(), a.sqlread["dDate"].ToString(), a.sqlread["cBusType"].ToString(), a.sqlread["cVenName"].ToString(), a.sqlread["cMemo"].ToString(), a.sqlread["cDepName"].ToString());
+                                    did = a.dbd.outboundUpdateMainOrder((int)a.sqlread["RdRecordsID"], a.sqlread["cCode"].ToString(), a.sqlread["dDate"].ToString(), a.sqlread["cBusType"].ToString(), a.sqlread["cVenName"].ToString(), a.sqlread["cMemo"].ToString(), a.sqlread["cDepName"].ToString(), a.sqlread["CKH"].ToString(),a.sqlread["cAcc_Name"].ToString());
                                     sw.WriteLine("4号接口引用结束");
+                                    
                                     break;
-
+                                case 4:
+                                    sw.WriteLine("引用5号接口");
+                                    did = a.dbd.exchangeInsert((int)a.sqlread["RdRecordsID"], a.sqlread["cAcc_Name"].ToString(), a.sqlread["cCusName"].ToString(), a.sqlread["cCode"].ToString(), a.sqlread["dDate"].ToString(), a.sqlread["cMemo"].ToString(), a.sqlread["cMaker"].ToString(), a.sqlread["cInvName"].ToString(), a.sqlread["cBatch"].ToString(), (double)a.sqlread["iQuantity"]);
+                                    sw.WriteLine("5号接口引用结束");
+                                    
+                                    break;
+                                case 5:
+                                    sw.WriteLine("引用6号接口");
+                                    did = a.dbd.exchangeUpdate((int)a.sqlread["RdRecordsID"], a.sqlread["cInvName"].ToString(), a.sqlread["cBatch"].ToString(),(double)a.sqlread["iQuantity"],a.sqlread["CKH"].ToString());
+                                    sw.WriteLine("6号接口引用结束");
+                                    break;
+                                case 6:
+                                    sw.WriteLine("引用7号接口");
+                                    did = a.dbd.exchangeDelete((int)a.sqlread["RdRecordsID"], a.sqlread["CKH"].ToString());
+                                    sw.WriteLine("7号接口引用结束");
+                                    break;
+                                //case 7:
+                                //    sw.WriteLine("引用8号接口");
+                                //    did = a.dbd.exchangeUpdateMain((int)a.sqlread["RdRecordsID"], a.sqlread["cCode"].ToString(),a.sqlread["CKH"].ToString());
+                                //    sw.WriteLine("8号接口引用结束");
+                                //    break;
                             }
+                            sw.WriteLine("一条写完");
                         }
                         if (!runAble)
                         {
@@ -411,15 +437,17 @@ namespace yyService
                         }
 
                         //完成这一条数据的同步，进行删除
+                        if (did==1)
+                        {
+                            int ss = (int)a.sqlread["AutoID"];
 
-                        int ss = (int)a.sqlread["AutoID"];
-
-                        sw.WriteLine("开始delete");
-                        String deleteQ = "delete from " + a._TBname + " where AutoID='" + ss + "'";
-                        a.scd = new SqlCommand(deleteQ, a.con1);
-                        a.scd.ExecuteNonQuery();
-                        sw.WriteLine("delete结束");
-                        a.closeAble = true;
+                            sw.WriteLine("开始delete");
+                            String deleteQ = "delete from " + a._TBname + " where AutoID='" + ss + "'";
+                            a.scd = new SqlCommand(deleteQ, a.con1);
+                            a.scd.ExecuteNonQuery();
+                            sw.WriteLine("delete结束");
+                            a.closeAble = true;
+                        }
 
                     }
                     a.con1.Close();
@@ -490,6 +518,7 @@ namespace yyService
                 this.None.Visible = true;
             } 
         }
+
         //托盘图标单击
         private void notifyIcon1_MouseClick(object sender, MouseEventArgs e)
         {
@@ -543,6 +572,7 @@ namespace yyService
                 this.TopMost = true;
                 this.Show();
                 this.WindowState = FormWindowState.Normal;
+                this.ShowInTaskbar = true;
                 this.TopMost = false;
             }
         }
@@ -568,12 +598,6 @@ namespace yyService
             contextMenuStrip1.Close();
             //this.Close();
         }
-
-       
-
-
-
-
 
     }
 }
