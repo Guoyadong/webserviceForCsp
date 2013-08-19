@@ -28,7 +28,7 @@ if @cRdName!='采购入库'
 return
 if @cRdName='采购入库'
 begin
-if @cVenName like '%新昌国邦%' or @cVenName like '%浙江国邦%' or @cVenName like '%国邦医药%'
+if @cVenName in (select cVenName from JLWSYN.dbo.NBGSDZB)
 return
 select @cBusType='采购入库'
 end
@@ -56,7 +56,7 @@ if @cRdName!='销售出库'
 return
 if @cRdName='销售出库'
 begin
-if @cCusName like '%新昌国邦%' or @cCusName like '%浙江国邦%' or @cCusName like '%国邦医药%'
+if @cCusName in (select cCusName from JLWSYN.dbo.NBGSDZB)
 begin
 return
 end
@@ -82,3 +82,5 @@ end
 insert into JLWSYN.dbo.RdRecords_Temp (RdRecordsID,RdRecordID,bRdFlag,cCode,cMaker,dDate,cBusType,cVenName
 ,cMemo,cDepName,Operation,cAcc_Name,CKH,cCusName,cVouchName,cRdName) values(@index,@ID,@bRdFlag,@cCode,@cMaker,@dateString,@cBusType,@cVenName,@cMemo
 ,@cDepName,3,@cAcc_Name,@CKH,@cCusName,@cVouchName,@cRdName)
+
+

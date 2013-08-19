@@ -41,7 +41,7 @@ if @cRdName!='采购入库'
 return
 if @cRdName='采购入库'
 begin
-if @cVenName like '%新昌国邦%' or @cVenName like '%浙江国邦%' or @cVenName like '%国邦医药%'
+if @cVenName in (select cVenName from JLWSYN.dbo.NBGSDZB)
 return
 select @cBusType='采购入库'
 end
@@ -69,13 +69,17 @@ if @cRdName!='销售出库'
 return
 if @cRdName='销售出库'
 begin
-if @cCusName like '%新昌国邦%' or @cCusName like '%浙江国邦%' or @cCusName like '%国邦医药%'
+if exists (select * from JLWSYN.dbo.NBGSDZB where cCusName=@cCusName)
 begin
 insert into JLWSYN.dbo.RdRecords_Temp (RdRecordsID,RdRecordID,bRdFlag,dDate,cBatch,cInvName,iQuantity
 ,cInvStd,iPrice,iUnitCost,Operation,cAcc_Name,cVouchName,cRdName,CKH,cVenName,cCusName,cCode,cBusType,cMemo,cDepName,cMaker) values(@index,@ID,@bRdFlag,@dateString,@cBatch,@cInvName,@iQuantity,@cInvStd
 ,@iPrice,@iUnitCost,5,@cAcc_Name,@cVouchName,@cRdName,@CKH,@cVenName,@cCusName,@cCode,@cBusType,@cMemo,@cDepName,@cMaker)
 return
 end
+if not exists (select * from JLWSYN.dbo.NBGSDZB where cCusName=@cCusName)
+insert into JLWSYN.dbo.RdRecords_Temp (RdRecordsID,RdRecordID,bRdFlag,cCode,cMaker,dDate,cBusType,cVenName
+,cMemo,cDepName,cInvName,cInvStd,cBatch,iQuantity,iUnitCost,iPrice,Operation,cAcc_Name,cVouchName,cRdName,CKH,cCusName) values(@index,@ID,@bRdFlag,@cCode,@cMaker,@dateString,@cBusType,@cVenName,@cMemo
+,@cDepName,@cInvName,@cInvStd,@cBatch,@iQuantity,@iUnitCost,@iPrice,9,@cAcc_Name,@cVouchName,@cRdName,@CKH,@cCusName)
 return
 end
 end
@@ -99,6 +103,3 @@ end
 insert into JLWSYN.dbo.RdRecords_Temp (RdRecordsID,RdRecordID,bRdFlag,dDate,cBatch,cInvName,iQuantity
 ,cInvStd,iPrice,iUnitCost,Operation,cAcc_Name,cVouchName,cRdName,CKH,cVenName,cCusName,cCode,cBusType,cMemo,cDepName,cMaker) values(@index,@ID,@bRdFlag,@dateString,@cBatch,@cInvName,@iQuantity,@cInvStd
 ,@iPrice,@iUnitCost,0,@cAcc_Name,@cVouchName,@cRdName,@CKH,@cVenName,@cCusName,@cCode,@cBusType,@cMemo,@cDepName,@cMaker)
-
-
-

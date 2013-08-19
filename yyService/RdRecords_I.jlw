@@ -22,14 +22,21 @@ select @cCode=cCode from RdRecord where ID=@ID
 set @dateString=convert(varchar(10),@dDate,23)
 select @Isempty=0
 select @Isempty=isnull((select top 1 AutoID from RdRecords where ID=@ID and AutoID!=@index),1)
-if @cWhcode='06'
+
+if @cWhCode='06'
 return
+
 set @inAutoID=0
 select @canOutQuantity=0.0
 if @bRdFlag=0
 begin
 set @inAutoID=convert(int,@cVouchCode)
+if @inAutoID is not null
+begin
 select @canOutQuantity=(iQuantity-iSOutQuantity) from RdRecords where AutoID=@inAutoID
+end
+if @inAutoID is null
+select @canOutQuantity=iQuantity from CurrentStock where cWhCode=@cWhCode and cInvCode=@cInvCode and cBatch=@cBatch
 if @iQuantity>@canOutQuantity
 return
 end
@@ -39,6 +46,8 @@ Select @cAcc_Name=cAcc_Name from UFSystem.dbo.UA_Account where cAcc_Id=substring
 Select @cAcc_Name=GSMC,@CKH=CKH from JLWSYN.dbo.GSDZB where cAcc_Name=@cAcc_Name
 select @cRdName=cRdName from Rd_Style where cRdCode=@cRdCode
 select @cVouchName=cVouchName from VouchType where cVouchType=@cVouchType
+insert into JLWSYN.dbo.tttttt (Isempty,cVouchName,cRdName,canOutQuantity,iQuantity,cCusName) values(@Isempty,@cVouchName
+,@cRdName,@canOutQuantity,@iQuantity,@cCusName)
 
 if @cVouchName='采购入库单'
 begin
@@ -53,7 +62,7 @@ if @cRdName!='采购入库'
 return
 if @cRdName='采购入库'
 begin
-if @cVenName like '%新昌国邦%' or @cVenName like '%浙江国邦%' or @cVenName like '%国邦医药%'
+if @cVenName in (select cVenName from JLWSYN.dbo.NBGSDZB)
 return
 select @cBusType='采购入库'
 end
@@ -102,11 +111,18 @@ if @cRdName!='销售出库'
 return
 if @cRdName='销售出库'
 begin
-if @cCusName like '%新昌国邦%' or @cCusName like '%浙江国邦%' or @cCusName like '%国邦医药%'
+if exists (select * from JLWSYN.dbo.NBGSDZB where cCusName=@cCusName)
 begin
 insert into JLWSYN.dbo.RdRecords_Temp (RdRecordsID,RdRecordID,bRdFlag,cCode,cMaker,dDate,cBusType,cVenName
 ,cMemo,cDepName,cInvName,cInvStd,cBatch,iQuantity,iUnitCost,iPrice,Operation,cAcc_Name,cVouchName,cRdName,CKH,cCusName) values(@index,@ID,@bRdFlag,@cCode,@cMaker,@dateString,@cBusType,@cVenName,@cMemo
 ,@cDepName,@cInvName,@cInvStd,@cBatch,@iQuantity,@iUnitCost,@iPrice,4,@cAcc_Name,@cVouchName,@cRdName,@CKH,@cCusName)
+return
+end
+if not exists (select * from JLWSYN.dbo.NBGSDZB where cCusName=@cCusName)
+begin
+insert into JLWSYN.dbo.RdRecords_Temp (RdRecordsID,RdRecordID,bRdFlag,cCode,cMaker,dDate,cBusType,cVenName
+,cMemo,cDepName,cInvName,cInvStd,cBatch,iQuantity,iUnitCost,iPrice,Operation,cAcc_Name,cVouchName,cRdName,CKH,cCusName) values(@index,@ID,@bRdFlag,@cCode,@cMaker,@dateString,@cBusType,@cVenName,@cMemo
+,@cDepName,@cInvName,@cInvStd,@cBatch,@iQuantity,@iUnitCost,@iPrice,8,@cAcc_Name,@cVouchName,@cRdName,@CKH,@cCusName)
 return
 end
 return

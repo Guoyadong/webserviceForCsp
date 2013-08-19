@@ -29,19 +29,27 @@ namespace yyService.DBupdate1 {
     [System.Web.Services.WebServiceBindingAttribute(Name="DBupdateSoapBinding", Namespace="http://ws")]
     public partial class DBupdateService : System.Web.Services.Protocols.SoapHttpClientProtocol {
         
-        private System.Threading.SendOrPostCallback outboundInsertMainOperationCompleted;
+        private System.Threading.SendOrPostCallback exchangeUpdateMainOperationCompleted;
+        
+        private System.Threading.SendOrPostCallback transportInsertOperationCompleted;
         
         private System.Threading.SendOrPostCallback outboundUpdateMainOperationCompleted;
         
-        private System.Threading.SendOrPostCallback exchangeInsertOperationCompleted;
+        private System.Threading.SendOrPostCallback transportUpdateOperationCompleted;
         
-        private System.Threading.SendOrPostCallback exchangeUpdateOperationCompleted;
+        private System.Threading.SendOrPostCallback transportDeleteOperationCompleted;
+        
+        private System.Threading.SendOrPostCallback outboundInsertMainOperationCompleted;
+        
+        private System.Threading.SendOrPostCallback exchangeDeleteOperationCompleted;
         
         private System.Threading.SendOrPostCallback outboundDeleteMainOperationCompleted;
         
         private System.Threading.SendOrPostCallback outboundUpdateMainOrderOperationCompleted;
         
-        private System.Threading.SendOrPostCallback exchangeDeleteOperationCompleted;
+        private System.Threading.SendOrPostCallback exchangeInsertOperationCompleted;
+        
+        private System.Threading.SendOrPostCallback exchangeUpdateOperationCompleted;
         
         private System.Threading.SendOrPostCallback testOperationCompleted;
         
@@ -96,16 +104,25 @@ namespace yyService.DBupdate1 {
         }
         
         /// <remarks/>
-        public event outboundInsertMainCompletedEventHandler outboundInsertMainCompleted;
+        public event exchangeUpdateMainCompletedEventHandler exchangeUpdateMainCompleted;
+        
+        /// <remarks/>
+        public event transportInsertCompletedEventHandler transportInsertCompleted;
         
         /// <remarks/>
         public event outboundUpdateMainCompletedEventHandler outboundUpdateMainCompleted;
         
         /// <remarks/>
-        public event exchangeInsertCompletedEventHandler exchangeInsertCompleted;
+        public event transportUpdateCompletedEventHandler transportUpdateCompleted;
         
         /// <remarks/>
-        public event exchangeUpdateCompletedEventHandler exchangeUpdateCompleted;
+        public event transportDeleteCompletedEventHandler transportDeleteCompleted;
+        
+        /// <remarks/>
+        public event outboundInsertMainCompletedEventHandler outboundInsertMainCompleted;
+        
+        /// <remarks/>
+        public event exchangeDeleteCompletedEventHandler exchangeDeleteCompleted;
         
         /// <remarks/>
         public event outboundDeleteMainCompletedEventHandler outboundDeleteMainCompleted;
@@ -114,10 +131,219 @@ namespace yyService.DBupdate1 {
         public event outboundUpdateMainOrderCompletedEventHandler outboundUpdateMainOrderCompleted;
         
         /// <remarks/>
-        public event exchangeDeleteCompletedEventHandler exchangeDeleteCompleted;
+        public event exchangeInsertCompletedEventHandler exchangeInsertCompleted;
+        
+        /// <remarks/>
+        public event exchangeUpdateCompletedEventHandler exchangeUpdateCompleted;
         
         /// <remarks/>
         public event testCompletedEventHandler testCompleted;
+        
+        /// <remarks/>
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("", RequestNamespace="http://ws", ResponseNamespace="http://ws", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        [return: System.Xml.Serialization.XmlElementAttribute("exchangeUpdateMainReturn")]
+        public int exchangeUpdateMain() {
+            object[] results = this.Invoke("exchangeUpdateMain", new object[0]);
+            return ((int)(results[0]));
+        }
+        
+        /// <remarks/>
+        public void exchangeUpdateMainAsync() {
+            this.exchangeUpdateMainAsync(null);
+        }
+        
+        /// <remarks/>
+        public void exchangeUpdateMainAsync(object userState) {
+            if ((this.exchangeUpdateMainOperationCompleted == null)) {
+                this.exchangeUpdateMainOperationCompleted = new System.Threading.SendOrPostCallback(this.OnexchangeUpdateMainOperationCompleted);
+            }
+            this.InvokeAsync("exchangeUpdateMain", new object[0], this.exchangeUpdateMainOperationCompleted, userState);
+        }
+        
+        private void OnexchangeUpdateMainOperationCompleted(object arg) {
+            if ((this.exchangeUpdateMainCompleted != null)) {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.exchangeUpdateMainCompleted(this, new exchangeUpdateMainCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
+        
+        /// <remarks/>
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("", RequestNamespace="http://ws", ResponseNamespace="http://ws", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        [return: System.Xml.Serialization.XmlElementAttribute("transportInsertReturn")]
+        public int transportInsert(int index, string cMemo, string CKH, double iQuantity, string cMaker, string cCode, string cBatch, string cInvName, string cInvStd, string dDate) {
+            object[] results = this.Invoke("transportInsert", new object[] {
+                        index,
+                        cMemo,
+                        CKH,
+                        iQuantity,
+                        cMaker,
+                        cCode,
+                        cBatch,
+                        cInvName,
+                        cInvStd,
+                        dDate});
+            return ((int)(results[0]));
+        }
+        
+        /// <remarks/>
+        public void transportInsertAsync(int index, string cMemo, string CKH, double iQuantity, string cMaker, string cCode, string cBatch, string cInvName, string cInvStd, string dDate) {
+            this.transportInsertAsync(index, cMemo, CKH, iQuantity, cMaker, cCode, cBatch, cInvName, cInvStd, dDate, null);
+        }
+        
+        /// <remarks/>
+        public void transportInsertAsync(int index, string cMemo, string CKH, double iQuantity, string cMaker, string cCode, string cBatch, string cInvName, string cInvStd, string dDate, object userState) {
+            if ((this.transportInsertOperationCompleted == null)) {
+                this.transportInsertOperationCompleted = new System.Threading.SendOrPostCallback(this.OntransportInsertOperationCompleted);
+            }
+            this.InvokeAsync("transportInsert", new object[] {
+                        index,
+                        cMemo,
+                        CKH,
+                        iQuantity,
+                        cMaker,
+                        cCode,
+                        cBatch,
+                        cInvName,
+                        cInvStd,
+                        dDate}, this.transportInsertOperationCompleted, userState);
+        }
+        
+        private void OntransportInsertOperationCompleted(object arg) {
+            if ((this.transportInsertCompleted != null)) {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.transportInsertCompleted(this, new transportInsertCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
+        
+        /// <remarks/>
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("", RequestNamespace="http://ws", ResponseNamespace="http://ws", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        [return: System.Xml.Serialization.XmlElementAttribute("outboundUpdateMainReturn")]
+        public int outboundUpdateMain(int index, int bRdFlag, string dDate, string cBatch, string cInvName, double iQuantity, string cInvStd, decimal iPrice, double iUnitCost, string CKH) {
+            object[] results = this.Invoke("outboundUpdateMain", new object[] {
+                        index,
+                        bRdFlag,
+                        dDate,
+                        cBatch,
+                        cInvName,
+                        iQuantity,
+                        cInvStd,
+                        iPrice,
+                        iUnitCost,
+                        CKH});
+            return ((int)(results[0]));
+        }
+        
+        /// <remarks/>
+        public void outboundUpdateMainAsync(int index, int bRdFlag, string dDate, string cBatch, string cInvName, double iQuantity, string cInvStd, decimal iPrice, double iUnitCost, string CKH) {
+            this.outboundUpdateMainAsync(index, bRdFlag, dDate, cBatch, cInvName, iQuantity, cInvStd, iPrice, iUnitCost, CKH, null);
+        }
+        
+        /// <remarks/>
+        public void outboundUpdateMainAsync(int index, int bRdFlag, string dDate, string cBatch, string cInvName, double iQuantity, string cInvStd, decimal iPrice, double iUnitCost, string CKH, object userState) {
+            if ((this.outboundUpdateMainOperationCompleted == null)) {
+                this.outboundUpdateMainOperationCompleted = new System.Threading.SendOrPostCallback(this.OnoutboundUpdateMainOperationCompleted);
+            }
+            this.InvokeAsync("outboundUpdateMain", new object[] {
+                        index,
+                        bRdFlag,
+                        dDate,
+                        cBatch,
+                        cInvName,
+                        iQuantity,
+                        cInvStd,
+                        iPrice,
+                        iUnitCost,
+                        CKH}, this.outboundUpdateMainOperationCompleted, userState);
+        }
+        
+        private void OnoutboundUpdateMainOperationCompleted(object arg) {
+            if ((this.outboundUpdateMainCompleted != null)) {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.outboundUpdateMainCompleted(this, new outboundUpdateMainCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
+        
+        /// <remarks/>
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("", RequestNamespace="http://ws", ResponseNamespace="http://ws", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        [return: System.Xml.Serialization.XmlElementAttribute("transportUpdateReturn")]
+        public int transportUpdate(int index, string dDate, string cBatch, string cInvName, double iQuantity, string cInvStd, string CKH, double yQuantity, string cMaker, string cCode) {
+            object[] results = this.Invoke("transportUpdate", new object[] {
+                        index,
+                        dDate,
+                        cBatch,
+                        cInvName,
+                        iQuantity,
+                        cInvStd,
+                        CKH,
+                        yQuantity,
+                        cMaker,
+                        cCode});
+            return ((int)(results[0]));
+        }
+        
+        /// <remarks/>
+        public void transportUpdateAsync(int index, string dDate, string cBatch, string cInvName, double iQuantity, string cInvStd, string CKH, double yQuantity, string cMaker, string cCode) {
+            this.transportUpdateAsync(index, dDate, cBatch, cInvName, iQuantity, cInvStd, CKH, yQuantity, cMaker, cCode, null);
+        }
+        
+        /// <remarks/>
+        public void transportUpdateAsync(int index, string dDate, string cBatch, string cInvName, double iQuantity, string cInvStd, string CKH, double yQuantity, string cMaker, string cCode, object userState) {
+            if ((this.transportUpdateOperationCompleted == null)) {
+                this.transportUpdateOperationCompleted = new System.Threading.SendOrPostCallback(this.OntransportUpdateOperationCompleted);
+            }
+            this.InvokeAsync("transportUpdate", new object[] {
+                        index,
+                        dDate,
+                        cBatch,
+                        cInvName,
+                        iQuantity,
+                        cInvStd,
+                        CKH,
+                        yQuantity,
+                        cMaker,
+                        cCode}, this.transportUpdateOperationCompleted, userState);
+        }
+        
+        private void OntransportUpdateOperationCompleted(object arg) {
+            if ((this.transportUpdateCompleted != null)) {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.transportUpdateCompleted(this, new transportUpdateCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
+        
+        /// <remarks/>
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("", RequestNamespace="http://ws", ResponseNamespace="http://ws", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        [return: System.Xml.Serialization.XmlElementAttribute("transportDeleteReturn")]
+        public int transportDelete(int index, string CKH, double Quantity) {
+            object[] results = this.Invoke("transportDelete", new object[] {
+                        index,
+                        CKH,
+                        Quantity});
+            return ((int)(results[0]));
+        }
+        
+        /// <remarks/>
+        public void transportDeleteAsync(int index, string CKH, double Quantity) {
+            this.transportDeleteAsync(index, CKH, Quantity, null);
+        }
+        
+        /// <remarks/>
+        public void transportDeleteAsync(int index, string CKH, double Quantity, object userState) {
+            if ((this.transportDeleteOperationCompleted == null)) {
+                this.transportDeleteOperationCompleted = new System.Threading.SendOrPostCallback(this.OntransportDeleteOperationCompleted);
+            }
+            this.InvokeAsync("transportDelete", new object[] {
+                        index,
+                        CKH,
+                        Quantity}, this.transportDeleteOperationCompleted, userState);
+        }
+        
+        private void OntransportDeleteOperationCompleted(object arg) {
+            if ((this.transportDeleteCompleted != null)) {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.transportDeleteCompleted(this, new transportDeleteCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
         
         /// <remarks/>
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("", RequestNamespace="http://ws", ResponseNamespace="http://ws", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
@@ -235,135 +461,33 @@ namespace yyService.DBupdate1 {
         
         /// <remarks/>
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("", RequestNamespace="http://ws", ResponseNamespace="http://ws", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
-        [return: System.Xml.Serialization.XmlElementAttribute("outboundUpdateMainReturn")]
-        public int outboundUpdateMain(int index, int bRdFlag, string dDate, string cBatch, string cInvName, double iQuantity, string cInvStd, decimal iPrice, double iUnitCost, string CKH) {
-            object[] results = this.Invoke("outboundUpdateMain", new object[] {
+        [return: System.Xml.Serialization.XmlElementAttribute("exchangeDeleteReturn")]
+        public int exchangeDelete(int index, string CKH) {
+            object[] results = this.Invoke("exchangeDelete", new object[] {
                         index,
-                        bRdFlag,
-                        dDate,
-                        cBatch,
-                        cInvName,
-                        iQuantity,
-                        cInvStd,
-                        iPrice,
-                        iUnitCost,
                         CKH});
             return ((int)(results[0]));
         }
         
         /// <remarks/>
-        public void outboundUpdateMainAsync(int index, int bRdFlag, string dDate, string cBatch, string cInvName, double iQuantity, string cInvStd, decimal iPrice, double iUnitCost, string CKH) {
-            this.outboundUpdateMainAsync(index, bRdFlag, dDate, cBatch, cInvName, iQuantity, cInvStd, iPrice, iUnitCost, CKH, null);
+        public void exchangeDeleteAsync(int index, string CKH) {
+            this.exchangeDeleteAsync(index, CKH, null);
         }
         
         /// <remarks/>
-        public void outboundUpdateMainAsync(int index, int bRdFlag, string dDate, string cBatch, string cInvName, double iQuantity, string cInvStd, decimal iPrice, double iUnitCost, string CKH, object userState) {
-            if ((this.outboundUpdateMainOperationCompleted == null)) {
-                this.outboundUpdateMainOperationCompleted = new System.Threading.SendOrPostCallback(this.OnoutboundUpdateMainOperationCompleted);
+        public void exchangeDeleteAsync(int index, string CKH, object userState) {
+            if ((this.exchangeDeleteOperationCompleted == null)) {
+                this.exchangeDeleteOperationCompleted = new System.Threading.SendOrPostCallback(this.OnexchangeDeleteOperationCompleted);
             }
-            this.InvokeAsync("outboundUpdateMain", new object[] {
+            this.InvokeAsync("exchangeDelete", new object[] {
                         index,
-                        bRdFlag,
-                        dDate,
-                        cBatch,
-                        cInvName,
-                        iQuantity,
-                        cInvStd,
-                        iPrice,
-                        iUnitCost,
-                        CKH}, this.outboundUpdateMainOperationCompleted, userState);
+                        CKH}, this.exchangeDeleteOperationCompleted, userState);
         }
         
-        private void OnoutboundUpdateMainOperationCompleted(object arg) {
-            if ((this.outboundUpdateMainCompleted != null)) {
+        private void OnexchangeDeleteOperationCompleted(object arg) {
+            if ((this.exchangeDeleteCompleted != null)) {
                 System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
-                this.outboundUpdateMainCompleted(this, new outboundUpdateMainCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
-            }
-        }
-        
-        /// <remarks/>
-        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("", RequestNamespace="http://ws", ResponseNamespace="http://ws", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
-        [return: System.Xml.Serialization.XmlElementAttribute("exchangeInsertReturn")]
-        public int exchangeInsert(int index, string From, string To, string cCode, string dDate, string cMemo, string cMaker, string cInvName, string cBatch, double iQuantity) {
-            object[] results = this.Invoke("exchangeInsert", new object[] {
-                        index,
-                        From,
-                        To,
-                        cCode,
-                        dDate,
-                        cMemo,
-                        cMaker,
-                        cInvName,
-                        cBatch,
-                        iQuantity});
-            return ((int)(results[0]));
-        }
-        
-        /// <remarks/>
-        public void exchangeInsertAsync(int index, string From, string To, string cCode, string dDate, string cMemo, string cMaker, string cInvName, string cBatch, double iQuantity) {
-            this.exchangeInsertAsync(index, From, To, cCode, dDate, cMemo, cMaker, cInvName, cBatch, iQuantity, null);
-        }
-        
-        /// <remarks/>
-        public void exchangeInsertAsync(int index, string From, string To, string cCode, string dDate, string cMemo, string cMaker, string cInvName, string cBatch, double iQuantity, object userState) {
-            if ((this.exchangeInsertOperationCompleted == null)) {
-                this.exchangeInsertOperationCompleted = new System.Threading.SendOrPostCallback(this.OnexchangeInsertOperationCompleted);
-            }
-            this.InvokeAsync("exchangeInsert", new object[] {
-                        index,
-                        From,
-                        To,
-                        cCode,
-                        dDate,
-                        cMemo,
-                        cMaker,
-                        cInvName,
-                        cBatch,
-                        iQuantity}, this.exchangeInsertOperationCompleted, userState);
-        }
-        
-        private void OnexchangeInsertOperationCompleted(object arg) {
-            if ((this.exchangeInsertCompleted != null)) {
-                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
-                this.exchangeInsertCompleted(this, new exchangeInsertCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
-            }
-        }
-        
-        /// <remarks/>
-        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("", RequestNamespace="http://ws", ResponseNamespace="http://ws", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
-        [return: System.Xml.Serialization.XmlElementAttribute("exchangeUpdateReturn")]
-        public int exchangeUpdate(int index, string cInvName, string cBatch, double iQuantity, string CKH) {
-            object[] results = this.Invoke("exchangeUpdate", new object[] {
-                        index,
-                        cInvName,
-                        cBatch,
-                        iQuantity,
-                        CKH});
-            return ((int)(results[0]));
-        }
-        
-        /// <remarks/>
-        public void exchangeUpdateAsync(int index, string cInvName, string cBatch, double iQuantity, string CKH) {
-            this.exchangeUpdateAsync(index, cInvName, cBatch, iQuantity, CKH, null);
-        }
-        
-        /// <remarks/>
-        public void exchangeUpdateAsync(int index, string cInvName, string cBatch, double iQuantity, string CKH, object userState) {
-            if ((this.exchangeUpdateOperationCompleted == null)) {
-                this.exchangeUpdateOperationCompleted = new System.Threading.SendOrPostCallback(this.OnexchangeUpdateOperationCompleted);
-            }
-            this.InvokeAsync("exchangeUpdate", new object[] {
-                        index,
-                        cInvName,
-                        cBatch,
-                        iQuantity,
-                        CKH}, this.exchangeUpdateOperationCompleted, userState);
-        }
-        
-        private void OnexchangeUpdateOperationCompleted(object arg) {
-            if ((this.exchangeUpdateCompleted != null)) {
-                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
-                this.exchangeUpdateCompleted(this, new exchangeUpdateCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+                this.exchangeDeleteCompleted(this, new exchangeDeleteCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
             }
         }
         
@@ -447,33 +571,91 @@ namespace yyService.DBupdate1 {
         
         /// <remarks/>
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("", RequestNamespace="http://ws", ResponseNamespace="http://ws", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
-        [return: System.Xml.Serialization.XmlElementAttribute("exchangeDeleteReturn")]
-        public int exchangeDelete(int index, string CKH) {
-            object[] results = this.Invoke("exchangeDelete", new object[] {
+        [return: System.Xml.Serialization.XmlElementAttribute("exchangeInsertReturn")]
+        public int exchangeInsert(int index, string From, string To, string cCode, string dDate, string cMemo, string cMaker, string cInvName, string cInvStd, string cBatch, double iQuantity) {
+            object[] results = this.Invoke("exchangeInsert", new object[] {
                         index,
+                        From,
+                        To,
+                        cCode,
+                        dDate,
+                        cMemo,
+                        cMaker,
+                        cInvName,
+                        cInvStd,
+                        cBatch,
+                        iQuantity});
+            return ((int)(results[0]));
+        }
+        
+        /// <remarks/>
+        public void exchangeInsertAsync(int index, string From, string To, string cCode, string dDate, string cMemo, string cMaker, string cInvName, string cInvStd, string cBatch, double iQuantity) {
+            this.exchangeInsertAsync(index, From, To, cCode, dDate, cMemo, cMaker, cInvName, cInvStd, cBatch, iQuantity, null);
+        }
+        
+        /// <remarks/>
+        public void exchangeInsertAsync(int index, string From, string To, string cCode, string dDate, string cMemo, string cMaker, string cInvName, string cInvStd, string cBatch, double iQuantity, object userState) {
+            if ((this.exchangeInsertOperationCompleted == null)) {
+                this.exchangeInsertOperationCompleted = new System.Threading.SendOrPostCallback(this.OnexchangeInsertOperationCompleted);
+            }
+            this.InvokeAsync("exchangeInsert", new object[] {
+                        index,
+                        From,
+                        To,
+                        cCode,
+                        dDate,
+                        cMemo,
+                        cMaker,
+                        cInvName,
+                        cInvStd,
+                        cBatch,
+                        iQuantity}, this.exchangeInsertOperationCompleted, userState);
+        }
+        
+        private void OnexchangeInsertOperationCompleted(object arg) {
+            if ((this.exchangeInsertCompleted != null)) {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.exchangeInsertCompleted(this, new exchangeInsertCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
+        
+        /// <remarks/>
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("", RequestNamespace="http://ws", ResponseNamespace="http://ws", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        [return: System.Xml.Serialization.XmlElementAttribute("exchangeUpdateReturn")]
+        public int exchangeUpdate(int index, string cInvName, string cInvStd, string cBatch, double iQuantity, string CKH) {
+            object[] results = this.Invoke("exchangeUpdate", new object[] {
+                        index,
+                        cInvName,
+                        cInvStd,
+                        cBatch,
+                        iQuantity,
                         CKH});
             return ((int)(results[0]));
         }
         
         /// <remarks/>
-        public void exchangeDeleteAsync(int index, string CKH) {
-            this.exchangeDeleteAsync(index, CKH, null);
+        public void exchangeUpdateAsync(int index, string cInvName, string cInvStd, string cBatch, double iQuantity, string CKH) {
+            this.exchangeUpdateAsync(index, cInvName, cInvStd, cBatch, iQuantity, CKH, null);
         }
         
         /// <remarks/>
-        public void exchangeDeleteAsync(int index, string CKH, object userState) {
-            if ((this.exchangeDeleteOperationCompleted == null)) {
-                this.exchangeDeleteOperationCompleted = new System.Threading.SendOrPostCallback(this.OnexchangeDeleteOperationCompleted);
+        public void exchangeUpdateAsync(int index, string cInvName, string cInvStd, string cBatch, double iQuantity, string CKH, object userState) {
+            if ((this.exchangeUpdateOperationCompleted == null)) {
+                this.exchangeUpdateOperationCompleted = new System.Threading.SendOrPostCallback(this.OnexchangeUpdateOperationCompleted);
             }
-            this.InvokeAsync("exchangeDelete", new object[] {
+            this.InvokeAsync("exchangeUpdate", new object[] {
                         index,
-                        CKH}, this.exchangeDeleteOperationCompleted, userState);
+                        cInvName,
+                        cInvStd,
+                        cBatch,
+                        iQuantity,
+                        CKH}, this.exchangeUpdateOperationCompleted, userState);
         }
         
-        private void OnexchangeDeleteOperationCompleted(object arg) {
-            if ((this.exchangeDeleteCompleted != null)) {
+        private void OnexchangeUpdateOperationCompleted(object arg) {
+            if ((this.exchangeUpdateCompleted != null)) {
                 System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
-                this.exchangeDeleteCompleted(this, new exchangeDeleteCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+                this.exchangeUpdateCompleted(this, new exchangeUpdateCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
             }
         }
         
@@ -526,17 +708,43 @@ namespace yyService.DBupdate1 {
     
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.0.30319.1")]
-    public delegate void outboundInsertMainCompletedEventHandler(object sender, outboundInsertMainCompletedEventArgs e);
+    public delegate void exchangeUpdateMainCompletedEventHandler(object sender, exchangeUpdateMainCompletedEventArgs e);
     
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.0.30319.1")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
-    public partial class outboundInsertMainCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+    public partial class exchangeUpdateMainCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
         
         private object[] results;
         
-        internal outboundInsertMainCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+        internal exchangeUpdateMainCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+                base(exception, cancelled, userState) {
+            this.results = results;
+        }
+        
+        /// <remarks/>
+        public int Result {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((int)(this.results[0]));
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.0.30319.1")]
+    public delegate void transportInsertCompletedEventHandler(object sender, transportInsertCompletedEventArgs e);
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.0.30319.1")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    public partial class transportInsertCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+        
+        private object[] results;
+        
+        internal transportInsertCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
                 base(exception, cancelled, userState) {
             this.results = results;
         }
@@ -578,17 +786,17 @@ namespace yyService.DBupdate1 {
     
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.0.30319.1")]
-    public delegate void exchangeInsertCompletedEventHandler(object sender, exchangeInsertCompletedEventArgs e);
+    public delegate void transportUpdateCompletedEventHandler(object sender, transportUpdateCompletedEventArgs e);
     
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.0.30319.1")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
-    public partial class exchangeInsertCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+    public partial class transportUpdateCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
         
         private object[] results;
         
-        internal exchangeInsertCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+        internal transportUpdateCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
                 base(exception, cancelled, userState) {
             this.results = results;
         }
@@ -604,17 +812,69 @@ namespace yyService.DBupdate1 {
     
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.0.30319.1")]
-    public delegate void exchangeUpdateCompletedEventHandler(object sender, exchangeUpdateCompletedEventArgs e);
+    public delegate void transportDeleteCompletedEventHandler(object sender, transportDeleteCompletedEventArgs e);
     
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.0.30319.1")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
-    public partial class exchangeUpdateCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+    public partial class transportDeleteCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
         
         private object[] results;
         
-        internal exchangeUpdateCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+        internal transportDeleteCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+                base(exception, cancelled, userState) {
+            this.results = results;
+        }
+        
+        /// <remarks/>
+        public int Result {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((int)(this.results[0]));
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.0.30319.1")]
+    public delegate void outboundInsertMainCompletedEventHandler(object sender, outboundInsertMainCompletedEventArgs e);
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.0.30319.1")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    public partial class outboundInsertMainCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+        
+        private object[] results;
+        
+        internal outboundInsertMainCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+                base(exception, cancelled, userState) {
+            this.results = results;
+        }
+        
+        /// <remarks/>
+        public int Result {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((int)(this.results[0]));
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.0.30319.1")]
+    public delegate void exchangeDeleteCompletedEventHandler(object sender, exchangeDeleteCompletedEventArgs e);
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.0.30319.1")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    public partial class exchangeDeleteCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+        
+        private object[] results;
+        
+        internal exchangeDeleteCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
                 base(exception, cancelled, userState) {
             this.results = results;
         }
@@ -682,17 +942,43 @@ namespace yyService.DBupdate1 {
     
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.0.30319.1")]
-    public delegate void exchangeDeleteCompletedEventHandler(object sender, exchangeDeleteCompletedEventArgs e);
+    public delegate void exchangeInsertCompletedEventHandler(object sender, exchangeInsertCompletedEventArgs e);
     
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.0.30319.1")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
-    public partial class exchangeDeleteCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+    public partial class exchangeInsertCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
         
         private object[] results;
         
-        internal exchangeDeleteCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+        internal exchangeInsertCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+                base(exception, cancelled, userState) {
+            this.results = results;
+        }
+        
+        /// <remarks/>
+        public int Result {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((int)(this.results[0]));
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.0.30319.1")]
+    public delegate void exchangeUpdateCompletedEventHandler(object sender, exchangeUpdateCompletedEventArgs e);
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.0.30319.1")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    public partial class exchangeUpdateCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+        
+        private object[] results;
+        
+        internal exchangeUpdateCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
                 base(exception, cancelled, userState) {
             this.results = results;
         }
