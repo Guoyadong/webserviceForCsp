@@ -29,10 +29,21 @@ namespace yyService
         [STAThread]
         static void Main()
         {
-            
-            Application.EnableVisualStyles();
-            Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new DBsyn());
+
+
+            Process[] processes = Process.GetProcessesByName("yyService");
+            if (processes.Length >= 2)
+            {
+                MessageBox.Show("程序已经执行!", "提醒", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+            else
+            {
+
+                Application.EnableVisualStyles();
+                Application.SetCompatibleTextRenderingDefault(false);
+                Application.Run(new DBsyn());
+            }
         }
 
     }
