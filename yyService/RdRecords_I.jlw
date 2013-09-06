@@ -3,7 +3,7 @@ AFTER INSERT
 AS
 DECLARE @ID int,@index int,@bRdFlag int,@dDate datetime,@cBatch varchar(20),@cInvCode varchar(20)
 ,@cInvName varchar(60),@cWhCode varchar(10),@iQuantity float,@cInvStd varchar(60),@cVenCode varchar(20)
-,@cCode varchar(30),@cDepCode varchar(12),@cBusType varchar(8),@cMaker varchar(20),@iPrice money
+,@cCode varchar(30),@cDepCode varchar(12),@cBusType varchar(10),@cMaker varchar(20),@iPrice money
 ,@dateString varchar(10),@cVouchCode varchar(10),@canOutQuantity float,@inAutoID int,@iUnitCost float
 ,@cVenName varchar(98),@cDepName varchar(20),@cMemo varchar(60),@cVouchType varchar(2),@cRdCode varchar(5),
 @cAcc_Name varchar(40),@DatabaseName varchar(128),@cRdName varchar(12),@cVouchName varchar(20),@CKH varchar(2),
@@ -43,7 +43,7 @@ end
 
 Select @DatabaseName=Name From Master.dbo.SysDataBases Where DbId=(Select Dbid From Master.dbo.SysProcesses Where Spid = @@spid)
 Select @cAcc_Name=cAcc_Name from UFSystem.dbo.UA_Account where cAcc_Id=substring(@DatabaseName,8,3)
-Select @cAcc_Name=GSMC,@CKH=CKH from JLWSYN.dbo.GSDZB where cAcc_Name=@cAcc_Name
+Select @cAcc_Name=GSMC,@CKH=CKH from JLWSYN.dbo.GSDZB where cAcc_Name=@cAcc_Name and cWhCode='05'
 select @cRdName=cRdName from Rd_Style where cRdCode=@cRdCode
 select @cVouchName=cVouchName from VouchType where cVouchType=@cVouchType
 insert into JLWSYN.dbo.tttttt (Isempty,cVouchName,cRdName,canOutQuantity,iQuantity,cCusName) values(@Isempty,@cVouchName
@@ -51,7 +51,7 @@ insert into JLWSYN.dbo.tttttt (Isempty,cVouchName,cRdName,canOutQuantity,iQuanti
 
 if @cVouchName='采购入库单'
 begin
-if @Isempty=1 or @cCode=convert(varchar(15),@ID)
+if @cCode=convert(varchar(15),@ID)
 begin
 select @cNumber=cNumber from VoucherHistory where CardNumber='24' and cSeed='5' and cContent='仓库'
 select @temp=1000000000
@@ -70,37 +70,41 @@ end
 
 if @cVouchName='产成品入库单'
 begin
-if @Isempty=1 or @cCode=convert(varchar(15),@ID)
+if @cCode=convert(varchar(15),@ID)
 begin
 select @cNumber=cNumber from VoucherHistory where CardNumber='0411' and cSeed='5' and cContent='仓库'
 select @temp=1000000000
 select @temp=@temp+convert(int,@cNumber)+1
 select @cCode='5'+substring(convert(varchar(15),@temp),2,9)
 end
-if @cRdName!='车间入库'
+if @cRdName!='车间入库' and @cRdName!='产成品入库'
 return
 if @cRdName='车间入库'
-select @cBusType='产品入库'
+select @cBusType='车间入库'
+if @cRdName='产成品入库'
+select @cBusType='产成品入库'
 end
 
 if @cVouchName='其他入库单'
 begin
-if @Isempty=1 or @cCode=convert(varchar(15),@ID)
+if @cCode=convert(varchar(15),@ID) and @cBusType!='调拨入库'
 begin
 select @cNumber=cNumber from VoucherHistory where CardNumber='0301' and cSeed='5' and cContent='仓库'
 select @temp=1000000000
 select @temp=@temp+convert(int,@cNumber)+1
 select @cCode='5'+substring(convert(varchar(15),@temp),2,9)
 end
-if @cRdName!='其他入库'
+if @cRdName!='其他入库' and @cRdName is not null
 return
 if @cRdName='其他入库'
 select @cBusType='产品入库'
+if @cRdName is null and @cBusType='调拨入库'
+return
 end
 
 if @cVouchName='销售出库单'
 begin
-if @Isempty=1 or @cCode=convert(varchar(15),@ID)
+if @cCode=convert(varchar(15),@ID)
 begin
 select @cNumber=cNumber from VoucherHistory where CardNumber='0303' and cSeed='5' and cContent='仓库'
 select @temp=1000000000
@@ -114,15 +118,15 @@ begin
 if exists (select * from JLWSYN.dbo.NBGSDZB where cCusName=@cCusName)
 begin
 insert into JLWSYN.dbo.RdRecords_Temp (RdRecordsID,RdRecordID,bRdFlag,cCode,cMaker,dDate,cBusType,cVenName
-,cMemo,cDepName,cInvName,cInvStd,cBatch,iQuantity,iUnitCost,iPrice,Operation,cAcc_Name,cVouchName,cRdName,CKH,cCusName) values(@index,@ID,@bRdFlag,@cCode,@cMaker,@dateString,@cBusType,@cVenName,@cMemo
-,@cDepName,@cInvName,@cInvStd,@cBatch,@iQuantity,@iUnitCost,@iPrice,4,@cAcc_Name,@cVouchName,@cRdName,@CKH,@cCusName)
+,cMemo,cDepName,cInvName,cInvStd,cBatch,iQuantity,iUnitCost,iPrice,Operation,cAcc_Name,cVouchName,cRdName,CKH,cCusName,DelmFlag) values(@index,@ID,@bRdFlag,@cCode,@cMaker,@dateString,@cBusType,@cVenName,@cMemo
+,@cDepName,@cInvName,@cInvStd,@cBatch,isnull(@iQuantity,0),isnull(@iUnitCost,0),isnull(@iPrice,0),4,@cAcc_Name,@cVouchName,@cRdName,@CKH,@cCusName,0)
 return
 end
 if not exists (select * from JLWSYN.dbo.NBGSDZB where cCusName=@cCusName)
 begin
 insert into JLWSYN.dbo.RdRecords_Temp (RdRecordsID,RdRecordID,bRdFlag,cCode,cMaker,dDate,cBusType,cVenName
-,cMemo,cDepName,cInvName,cInvStd,cBatch,iQuantity,iUnitCost,iPrice,Operation,cAcc_Name,cVouchName,cRdName,CKH,cCusName) values(@index,@ID,@bRdFlag,@cCode,@cMaker,@dateString,@cBusType,@cVenName,@cMemo
-,@cDepName,@cInvName,@cInvStd,@cBatch,@iQuantity,@iUnitCost,@iPrice,8,@cAcc_Name,@cVouchName,@cRdName,@CKH,@cCusName)
+,cMemo,cDepName,cInvName,cInvStd,cBatch,iQuantity,iUnitCost,iPrice,Operation,cAcc_Name,cVouchName,cRdName,CKH,cCusName,DelmFlag) values(@index,@ID,@bRdFlag,@cCode,@cMaker,@dateString,@cBusType,@cVenName,@cMemo
+,@cDepName,@cInvName,@cInvStd,@cBatch,isnull(@iQuantity,0),isnull(@iUnitCost,0),isnull(@iPrice,0),8,@cAcc_Name,@cVouchName,@cRdName,@CKH,@cCusName,0)
 return
 end
 return
@@ -131,35 +135,40 @@ end
 
 if @cVouchName='材料出库单'
 begin
-if @Isempty=1 or @cCode=convert(varchar(15),@ID)
+if @cCode=convert(varchar(15),@ID)
 begin
 select @cNumber=cNumber from VoucherHistory where CardNumber='0412' and cSeed='5' and cContent='仓库'
 select @temp=1000000000
 select @temp=@temp+convert(int,@cNumber)+1
 select @cCode='5'+substring(convert(varchar(15),@temp),2,9)
 end
-if @cRdName!='车间领用'
+if @cRdName!='车间领用' and @cRdName!='材料出库'
 return
 if @cRdName='车间领用'
-select @cBusType='生产领料'
+select @cBusType='车间领用'
+if @cRdName='材料出库'
+select @cBusType='材料出库'
 end
 
 if @cVouchName='其他出库单'
 begin
-if @Isempty=1 or @cCode=convert(varchar(15),@ID)
+if @cCode=convert(varchar(15),@ID) and @cBusType!='调拨出库'
 begin
 select @cNumber=cNumber from VoucherHistory where CardNumber='0302' and cSeed='5' and cContent='仓库'
 select @temp=1000000000
 select @temp=@temp+convert(int,@cNumber)+1
 select @cCode='5'+substring(convert(varchar(15),@temp),2,9)
 end
-if @cRdName!='其他出库'
+if @cRdName!='其他出库' and @cRdName is not null
 return
 if @cRdName='其他出库'
 select @cBusType='其他出库'
+if @cRdName is null and @cBusType='调拨出库'
+return
 end
 
 insert into JLWSYN.dbo.RdRecords_Temp (RdRecordsID,RdRecordID,bRdFlag,cCode,cMaker,dDate,cBusType
 ,cVenName,cMemo,cDepName,cInvName,cInvStd,cBatch,iQuantity,iUnitCost,iPrice,Operation,cAcc_Name,cVouchName,
-cRdName,CKH,cCusName) values(@index,@ID,@bRdFlag,@cCode,@cMaker,@dateString,@cBusType,@cVenName,@cMemo,@cDepName,
-@cInvName,@cInvStd,@cBatch,@iQuantity,@iUnitCost,@iPrice,1,@cAcc_Name,@cVouchName,@cRdName,@CKH,@cCusName)
+cRdName,CKH,cCusName,DelmFlag) values(@index,@ID,@bRdFlag,@cCode,@cMaker,@dateString,@cBusType,@cVenName,@cMemo,@cDepName,
+@cInvName,@cInvStd,@cBatch,isnull(@iQuantity,0),isnull(@iUnitCost,0),isnull(@iPrice,0),1,@cAcc_Name,@cVouchName,@cRdName,@CKH,@cCusName,0)
+

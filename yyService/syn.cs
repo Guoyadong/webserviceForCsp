@@ -63,17 +63,17 @@ namespace yyService
                 com.Connection = conn;
                 com.Transaction = stc;
                 read = com.ExecuteReader();
-                String dbname="";
+                String dbname = "", ZTH = read["ZTH"].ToString();
                 while (read.Read())
                 {
-                    dbname = "UFDATA_" + read["ZTH"].ToString() + "_" + data;
+                    dbname = "UFDATA_" +ZTH+ "_" + data;
                     break;
                 }
                 read.Close();
                 //conn.Close();
                 Console.WriteLine("数据库为：" + dbname);
 
-                string connectionstr = "uid=sa; password=sa; initial catalog=" + dbname + "; Server="+_ip;
+                string connectionstr = "uid="+_uid+"; password="+_pwd+"; initial catalog=" + dbname + "; Server="+_ip;
                 conn = new SqlConnection(connectionstr);
                 conn.Open();
 
@@ -81,11 +81,11 @@ namespace yyService
                 ///id:主表号；autoid：明细表号
                 int id = 0, autoid = 0;
                 ///cCode：销售单号;cDepCode:部门编号;cCusCode:客户编号;cInvCode:物品号
-                String cCode = null, code_temp = null, cDepCode = null, cCusCode = null, cInvCode = null;
+                String cCode = null, code_temp = null, cDepCode = null, cCusCode = null, cInvCode = null,cwhcode=null,crdcode=null;
 
                 //获取主表id，明细表autoid
 
-                query = "declare @P1 int declare @P2 int exec sp_GetId '', '401', 'rd', 1, @P1 output, @P2 output select @P1 id, @P2 autoid ";
+                query = "declare @P1 int declare @P2 int exec sp_GetId '', '"+ZTH+"', 'rd', 1, @P1 output, @P2 output select @P1 id, @P2 autoid ";
                 com = new SqlCommand(query, conn);
                 read = com.ExecuteReader();
                 // res = com.executeQuery(query,conn);
@@ -149,7 +149,14 @@ namespace yyService
                     Console.WriteLine("相关条数为0，开始插入新出库单");
 
                     //获取单号
-                    query = "select * from VoucherHistory Where CardNumber='0303' and cContent='仓库' and cSeed='5' ";
+                    if (CKH == "401" || CKH=="301")
+                    {
+                        query = "select * from VoucherHistory Where CardNumber='0303' and cContent='仓库' and cSeed='5' ";
+                    }
+                    else if (CKH == "105")
+                    {
+                        query = "select * from VoucherHistory Where iRdFlagSeed='2' and cContent is null ";
+                    }
                     com = new SqlCommand(query, conn);
                     read = com.ExecuteReader();
                     if (read.Read())
@@ -162,16 +169,46 @@ namespace yyService
                     tem++;
                     //String s=String.valueOf(tmp);
                     string s = tem.ToString();
+                    if (CKH == "401" || CKH == "301")
+                    {
+                        cCode = "5";
+                    }
+                    else if (CKH == "105")
+                    {
+                        cCode = "0";
+                    }
                     cCode = "5";
                     for (int i = 0; i < 9 - s.Length; i++)
                         cCode += "0";
                     cCode += s;
-                    query = "Update VoucherHistory set cNumber='" + s + "' Where CardNumber='0303' and cContent='仓库' and cSeed='5'";
+                    if (CKH == "401" || CKH == "301")
+                    {
+                        query = "Update VoucherHistory set cNumber='" + s + "' Where CardNumber='0303' and cContent='仓库' and cSeed='5'";
+                    }
+                    else if (CKH == "105")
+                    {
+                        query = "Update VoucherHistory set cNumber='" + s + "'  Where iRdFlagSeed='2' and cContent is null ";
+                    }
+                    
                     com = new SqlCommand(query, conn);
                     com.ExecuteNonQuery();
 
+                    query = "select * from warehouse where cwhname='成品仓库'";
+                    com = new SqlCommand(query, conn);
+                    read = com.ExecuteReader();
+                    read.Read();
+                    cwhcode=read["cWhCode"].ToString();
+                    read.Close();
+
+                    query = "select * from rd_style where cRdName='销售出库'";
+                    com = new SqlCommand(query, conn);
+                    read = com.ExecuteReader();
+                    read.Read();
+                    crdcode = read["cRdCode"].ToString();
+                    read.Close();
+
                     dataIn = "Insert Into Rdrecord(id,brdflag,cvouchtype,cbustype,cbuscode,imquantity,darvdate,cchkcode,dchkdate,cchkperson,vt_id,bisstqc,csource,cwhcode,ddate,ccode,crdcode,cdepcode,cpersoncode,cstcode,ccuscode,cvencode,cordercode,cbillcode,cdlcode,cmemo,cmaker,caccounter,chandler,cdefine1,cdefine2,cdefine3,cdefine4,cdefine5,cdefine6,cdefine7,cdefine8,cdefine9,cdefine10,cdefine11,cdefine12,cdefine13,cdefine14,cdefine15,cdefine16,dveridate,gspcheck,bpufirst,biafirst,ipurorderid,ipurarriveid,iproorderid,iarriveid,isalebillid) "
-                            + "Values (" + id + ",0,'32','普通销售',NULL,0,NULL,NULL,NULL,NULL,87,0,'库存','05','" + QRRQ + "','" + cCode + "','201','" + cDepCode + "',NULL,NULL,'" + cCusCode + "',NULL,NULL,NULL,NULL,'" + BZ + "','" + ZDR + "',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,NULL,0,0,NULL,NULL,NULL,NULL,NULL)";
+                            + "Values (" + id + ",0,'32','普通销售',NULL,0,NULL,NULL,NULL,NULL,87,0,'库存','"+cwhcode+"','" + QRRQ + "','" + cCode + "','"+crdcode+"','" + cDepCode + "',NULL,NULL,'" + cCusCode + "',NULL,NULL,NULL,NULL,'" + BZ + "','" + ZDR + "',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,NULL,0,0,NULL,NULL,NULL,NULL,NULL)";
                     Console.WriteLine(dataIn);
                     com = new SqlCommand(dataIn, conn);
                     com.ExecuteNonQuery();
@@ -186,6 +223,10 @@ namespace yyService
                     com.ExecuteNonQuery();
                     Console.WriteLine("库存表更新完毕");
                     dataIn = " insert into JLWSYN..MXDZB (DjLsh,DjBth,RdRecordID,RdRecordsID,cInvCode,cCode,cDepCode,cCusCode,iQuantity,DBname,cBatch) values (" + DjLsh + "," + DjBth + "," + id + "," + autoid + ",'" + cInvCode + "','" + cCode + "','" + cDepCode + "','" + cCusCode + "'," + iQuantity + ",'" + dbname + "','" + PH + "')";
+                    Console.WriteLine(dataIn);
+                    com = new SqlCommand(dataIn, conn);
+                    com.ExecuteNonQuery();
+                    dataIn = " insert into JLWSYN..MXDZB (DjLsh,DjBth,RdRecordID,RdRecordsID,cCode,cDepCode,cCusCode,iQuantity,DBname) values (" + DjLsh + ",-1," + id + ",-1,'" + cCode + "','" + cDepCode + "','" + cCusCode + "',0,'" + dbname + "')";
                     Console.WriteLine(dataIn);
                     com = new SqlCommand(dataIn, conn);
                     com.ExecuteNonQuery();
@@ -287,7 +328,7 @@ namespace yyService
                 //conn.setAutoCommit(false);
                 //System.out.println("Connection Successful!");
                 //sta = conn.createStatement();
-                string connectionstr = "uid=sa; password=sa; initial catalog=" + dbname + "; Server="+_ip;
+                string connectionstr = "uid=" + _uid + "; password=" + _pwd + "; initial catalog=" + dbname + "; Server=" + _ip;
                 con2 = new SqlConnection(connectionstr);
                 con2.Open();
                 stc2 = con2.BeginTransaction(System.Data.IsolationLevel.ReadCommitted, "SQLTransaction");
@@ -408,7 +449,7 @@ namespace yyService
                         //sta2 = con2.createStatement();
 
 
-                        string connectstirng = "uid=sa; password=sa; initial catalog=" + dbname + "; Server="+_ip;
+                        string connectstirng = "uid=" + _uid + "; password=" + _pwd + "; initial catalog=" + dbname + "; Server=" + _ip;
                         //sta2.execute("alter TABLE Rdrecords  DISABLE TRIGGER Rdrecords_delete ");
                         if(kk==0)
                         {   
@@ -470,14 +511,14 @@ namespace yyService
                     int num = (int)com.ExecuteScalar();
                     //conn.Close();
 
-                    string connectstring = "uid=sa; password=sa; initial catalog=" + dbname + "; Server="+_ip;
+                    string connectstring = "uid=" + _uid + "; password=" + _pwd + "; initial catalog=" + dbname + "; Server=" + _ip;
                     con2 = new SqlConnection(connectstring);
                     con2.Open();
                     stc2 = con2.BeginTransaction(System.Data.IsolationLevel.ReadCommitted, "SQLTransaction");
                     Console.WriteLine("相关数据获取完毕，开始删除操作");
                     String del = null;
                     kk++;
-                    if (num > 1)
+                    if (num >1)
                     {
                         Console.WriteLine("明细对照表找到多条数据，只删除明细表");
                         del = "delete from Rdrecords where id=" + id + " and autoId=" + autoid + "";

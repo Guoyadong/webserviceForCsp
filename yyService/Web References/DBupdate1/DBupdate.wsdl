@@ -2,20 +2,22 @@
 <wsdl:definitions xmlns:intf="http://ws" xmlns:apachesoap="http://xml.apache.org/xml-soap" xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:impl="http://ws" targetNamespace="http://ws" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
   <wsdl:types>
     <xsd:schema xmlns="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" targetNamespace="http://ws">
-      <xsd:element name="outboundDeleteMain">
+      <xsd:element name="exchangeUpdate">
         <xsd:complexType>
           <xsd:sequence>
             <xsd:element name="index" type="xsd:int" />
+            <xsd:element name="cInvName" type="xsd:string" />
+            <xsd:element name="cInvStd" type="xsd:string" />
+            <xsd:element name="cBatch" type="xsd:string" />
+            <xsd:element name="iQuantity" type="xsd:double" />
             <xsd:element name="CKH" type="xsd:string" />
-            <xsd:element name="DelmFlag" type="xsd:int" />
-            <xsd:element name="RdRecordID" type="xsd:int" />
           </xsd:sequence>
         </xsd:complexType>
       </xsd:element>
-      <xsd:element name="outboundDeleteMainResponse">
+      <xsd:element name="exchangeUpdateResponse">
         <xsd:complexType>
           <xsd:sequence>
-            <xsd:element name="outboundDeleteMainReturn" type="xsd:int" />
+            <xsd:element name="exchangeUpdateReturn" type="xsd:int" />
           </xsd:sequence>
         </xsd:complexType>
       </xsd:element>
@@ -47,6 +49,23 @@
         <xsd:complexType>
           <xsd:sequence>
             <xsd:element name="outboundInsertMainReturn" type="xsd:int" />
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="outboundDeleteMain">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="index" type="xsd:int" />
+            <xsd:element name="CKH" type="xsd:string" />
+            <xsd:element name="DelmFlag" type="xsd:int" />
+            <xsd:element name="RdRecordID" type="xsd:int" />
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="outboundDeleteMainResponse">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="outboundDeleteMainReturn" type="xsd:int" />
           </xsd:sequence>
         </xsd:complexType>
       </xsd:element>
@@ -118,25 +137,6 @@
         <xsd:complexType>
           <xsd:sequence>
             <xsd:element name="outboundUpdateMainReturn" type="xsd:int" />
-          </xsd:sequence>
-        </xsd:complexType>
-      </xsd:element>
-      <xsd:element name="exchangeUpdate">
-        <xsd:complexType>
-          <xsd:sequence>
-            <xsd:element name="index" type="xsd:int" />
-            <xsd:element name="cInvName" type="xsd:string" />
-            <xsd:element name="cInvStd" type="xsd:string" />
-            <xsd:element name="cBatch" type="xsd:string" />
-            <xsd:element name="iQuantity" type="xsd:double" />
-            <xsd:element name="CKH" type="xsd:string" />
-          </xsd:sequence>
-        </xsd:complexType>
-      </xsd:element>
-      <xsd:element name="exchangeUpdateResponse">
-        <xsd:complexType>
-          <xsd:sequence>
-            <xsd:element name="exchangeUpdateReturn" type="xsd:int" />
           </xsd:sequence>
         </xsd:complexType>
       </xsd:element>
@@ -251,6 +251,67 @@
           </xsd:sequence>
         </xsd:complexType>
       </xsd:element>
+      <xsd:element name="orderInsert">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="recordID" type="xsd:int" />
+            <xsd:element name="recordsID" type="xsd:int" />
+            <xsd:element name="From" type="xsd:string" />
+            <xsd:element name="To" type="xsd:string" />
+            <xsd:element name="cAccName" type="xsd:string" />
+            <xsd:element name="dDate" type="xsd:string" />
+            <xsd:element name="cMemo" type="xsd:string" />
+            <xsd:element name="cMaker" type="xsd:string" />
+            <xsd:element name="cInvName" type="xsd:string" />
+            <xsd:element name="cInvStd" type="xsd:string" />
+            <xsd:element name="cBatch" type="xsd:string" />
+            <xsd:element name="iQuantity" type="xsd:double" />
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="orderInsertResponse">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="orderInsertReturn" type="xsd:int" />
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="orderUpdate">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="recordsID" type="xsd:int" />
+            <xsd:element name="cInvName" type="xsd:string" />
+            <xsd:element name="cInvStd" type="xsd:string" />
+            <xsd:element name="cBatch" type="xsd:string" />
+            <xsd:element name="iQuantity" type="xsd:double" />
+            <xsd:element name="cAccName" type="xsd:string" />
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="orderUpdateResponse">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="orderUpdateReturn" type="xsd:int" />
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="orderDelete">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="recordsID" type="xsd:int" />
+            <xsd:element name="cAccName" type="xsd:string" />
+            <xsd:element name="flag" type="xsd:int" />
+            <xsd:element name="record" type="xsd:int" />
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="orderDeleteResponse">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="orderDeleteReturn" type="xsd:int" />
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
       <xsd:element name="test">
         <xsd:complexType />
       </xsd:element>
@@ -281,14 +342,14 @@
   <wsdl:message name="transportInsertRequest">
     <wsdl:part name="parameters" element="impl:transportInsert" />
   </wsdl:message>
-  <wsdl:message name="exchangeUpdateResponse">
-    <wsdl:part name="parameters" element="impl:exchangeUpdateResponse" />
-  </wsdl:message>
   <wsdl:message name="exchangeInsertResponse">
     <wsdl:part name="parameters" element="impl:exchangeInsertResponse" />
   </wsdl:message>
   <wsdl:message name="outboundDeleteMainRequest">
     <wsdl:part name="parameters" element="impl:outboundDeleteMain" />
+  </wsdl:message>
+  <wsdl:message name="exchangeUpdateResponse">
+    <wsdl:part name="parameters" element="impl:exchangeUpdateResponse" />
   </wsdl:message>
   <wsdl:message name="transportInsertResponse">
     <wsdl:part name="parameters" element="impl:transportInsertResponse" />
@@ -308,11 +369,20 @@
   <wsdl:message name="exchangeUpdateMainRequest">
     <wsdl:part name="parameters" element="impl:exchangeUpdateMain" />
   </wsdl:message>
+  <wsdl:message name="orderInsertResponse">
+    <wsdl:part name="parameters" element="impl:orderInsertResponse" />
+  </wsdl:message>
+  <wsdl:message name="orderDeleteRequest">
+    <wsdl:part name="parameters" element="impl:orderDelete" />
+  </wsdl:message>
   <wsdl:message name="exchangeDeleteResponse">
     <wsdl:part name="parameters" element="impl:exchangeDeleteResponse" />
   </wsdl:message>
   <wsdl:message name="eosGetRecordsRequest">
     <wsdl:part name="parameters" element="impl:eosGetRecords" />
+  </wsdl:message>
+  <wsdl:message name="orderUpdateResponse">
+    <wsdl:part name="parameters" element="impl:orderUpdateResponse" />
   </wsdl:message>
   <wsdl:message name="outboundUpdateMainResponse">
     <wsdl:part name="parameters" element="impl:outboundUpdateMainResponse" />
@@ -322,6 +392,9 @@
   </wsdl:message>
   <wsdl:message name="outboundUpdateMainRequest">
     <wsdl:part name="parameters" element="impl:outboundUpdateMain" />
+  </wsdl:message>
+  <wsdl:message name="orderInsertRequest">
+    <wsdl:part name="parameters" element="impl:orderInsert" />
   </wsdl:message>
   <wsdl:message name="outboundDeleteMainResponse">
     <wsdl:part name="parameters" element="impl:outboundDeleteMainResponse" />
@@ -335,8 +408,14 @@
   <wsdl:message name="eosDelRecordsRequest">
     <wsdl:part name="parameters" element="impl:eosDelRecords" />
   </wsdl:message>
+  <wsdl:message name="orderDeleteResponse">
+    <wsdl:part name="parameters" element="impl:orderDeleteResponse" />
+  </wsdl:message>
   <wsdl:message name="transportUpdateResponse">
     <wsdl:part name="parameters" element="impl:transportUpdateResponse" />
+  </wsdl:message>
+  <wsdl:message name="orderUpdateRequest">
+    <wsdl:part name="parameters" element="impl:orderUpdate" />
   </wsdl:message>
   <wsdl:message name="testRequest">
     <wsdl:part name="parameters" element="impl:test" />
@@ -348,13 +427,17 @@
     <wsdl:part name="parameters" element="impl:eosGetRecordsResponse" />
   </wsdl:message>
   <wsdl:portType name="DBupdate">
-    <wsdl:operation name="outboundDeleteMain">
-      <wsdl:input name="outboundDeleteMainRequest" message="impl:outboundDeleteMainRequest" />
-      <wsdl:output name="outboundDeleteMainResponse" message="impl:outboundDeleteMainResponse" />
+    <wsdl:operation name="exchangeUpdate">
+      <wsdl:input name="exchangeUpdateRequest" message="impl:exchangeUpdateRequest" />
+      <wsdl:output name="exchangeUpdateResponse" message="impl:exchangeUpdateResponse" />
     </wsdl:operation>
     <wsdl:operation name="outboundInsertMain">
       <wsdl:input name="outboundInsertMainRequest" message="impl:outboundInsertMainRequest" />
       <wsdl:output name="outboundInsertMainResponse" message="impl:outboundInsertMainResponse" />
+    </wsdl:operation>
+    <wsdl:operation name="outboundDeleteMain">
+      <wsdl:input name="outboundDeleteMainRequest" message="impl:outboundDeleteMainRequest" />
+      <wsdl:output name="outboundDeleteMainResponse" message="impl:outboundDeleteMainResponse" />
     </wsdl:operation>
     <wsdl:operation name="outboundUpdateMainOrder">
       <wsdl:input name="outboundUpdateMainOrderRequest" message="impl:outboundUpdateMainOrderRequest" />
@@ -367,10 +450,6 @@
     <wsdl:operation name="outboundUpdateMain">
       <wsdl:input name="outboundUpdateMainRequest" message="impl:outboundUpdateMainRequest" />
       <wsdl:output name="outboundUpdateMainResponse" message="impl:outboundUpdateMainResponse" />
-    </wsdl:operation>
-    <wsdl:operation name="exchangeUpdate">
-      <wsdl:input name="exchangeUpdateRequest" message="impl:exchangeUpdateRequest" />
-      <wsdl:output name="exchangeUpdateResponse" message="impl:exchangeUpdateResponse" />
     </wsdl:operation>
     <wsdl:operation name="exchangeDelete">
       <wsdl:input name="exchangeDeleteRequest" message="impl:exchangeDeleteRequest" />
@@ -400,6 +479,18 @@
       <wsdl:input name="eosDelRecordsRequest" message="impl:eosDelRecordsRequest" />
       <wsdl:output name="eosDelRecordsResponse" message="impl:eosDelRecordsResponse" />
     </wsdl:operation>
+    <wsdl:operation name="orderInsert">
+      <wsdl:input name="orderInsertRequest" message="impl:orderInsertRequest" />
+      <wsdl:output name="orderInsertResponse" message="impl:orderInsertResponse" />
+    </wsdl:operation>
+    <wsdl:operation name="orderUpdate">
+      <wsdl:input name="orderUpdateRequest" message="impl:orderUpdateRequest" />
+      <wsdl:output name="orderUpdateResponse" message="impl:orderUpdateResponse" />
+    </wsdl:operation>
+    <wsdl:operation name="orderDelete">
+      <wsdl:input name="orderDeleteRequest" message="impl:orderDeleteRequest" />
+      <wsdl:output name="orderDeleteResponse" message="impl:orderDeleteResponse" />
+    </wsdl:operation>
     <wsdl:operation name="test">
       <wsdl:input name="testRequest" message="impl:testRequest" />
       <wsdl:output name="testResponse" message="impl:testResponse" />
@@ -407,12 +498,12 @@
   </wsdl:portType>
   <wsdl:binding name="DBupdateSoapBinding" type="impl:DBupdate">
     <wsdlsoap:binding transport="http://schemas.xmlsoap.org/soap/http" />
-    <wsdl:operation name="outboundDeleteMain">
+    <wsdl:operation name="exchangeUpdate">
       <wsdlsoap:operation soapAction="" />
-      <wsdl:input name="outboundDeleteMainRequest">
+      <wsdl:input name="exchangeUpdateRequest">
         <wsdlsoap:body use="literal" />
       </wsdl:input>
-      <wsdl:output name="outboundDeleteMainResponse">
+      <wsdl:output name="exchangeUpdateResponse">
         <wsdlsoap:body use="literal" />
       </wsdl:output>
     </wsdl:operation>
@@ -422,6 +513,15 @@
         <wsdlsoap:body use="literal" />
       </wsdl:input>
       <wsdl:output name="outboundInsertMainResponse">
+        <wsdlsoap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="outboundDeleteMain">
+      <wsdlsoap:operation soapAction="" />
+      <wsdl:input name="outboundDeleteMainRequest">
+        <wsdlsoap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output name="outboundDeleteMainResponse">
         <wsdlsoap:body use="literal" />
       </wsdl:output>
     </wsdl:operation>
@@ -449,15 +549,6 @@
         <wsdlsoap:body use="literal" />
       </wsdl:input>
       <wsdl:output name="outboundUpdateMainResponse">
-        <wsdlsoap:body use="literal" />
-      </wsdl:output>
-    </wsdl:operation>
-    <wsdl:operation name="exchangeUpdate">
-      <wsdlsoap:operation soapAction="" />
-      <wsdl:input name="exchangeUpdateRequest">
-        <wsdlsoap:body use="literal" />
-      </wsdl:input>
-      <wsdl:output name="exchangeUpdateResponse">
         <wsdlsoap:body use="literal" />
       </wsdl:output>
     </wsdl:operation>
@@ -521,6 +612,33 @@
         <wsdlsoap:body use="literal" />
       </wsdl:input>
       <wsdl:output name="eosDelRecordsResponse">
+        <wsdlsoap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="orderInsert">
+      <wsdlsoap:operation soapAction="" />
+      <wsdl:input name="orderInsertRequest">
+        <wsdlsoap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output name="orderInsertResponse">
+        <wsdlsoap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="orderUpdate">
+      <wsdlsoap:operation soapAction="" />
+      <wsdl:input name="orderUpdateRequest">
+        <wsdlsoap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output name="orderUpdateResponse">
+        <wsdlsoap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="orderDelete">
+      <wsdlsoap:operation soapAction="" />
+      <wsdl:input name="orderDeleteRequest">
+        <wsdlsoap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output name="orderDeleteResponse">
         <wsdlsoap:body use="literal" />
       </wsdl:output>
     </wsdl:operation>

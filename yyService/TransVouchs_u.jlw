@@ -1,0 +1,19 @@
+﻿CREATE TRIGGER [TransVouchs_update] ON [dbo].[TransVouchs] 
+After UPDATE
+AS
+Declare @AutoID int,@TransVouchID int,@dTVDate datetime,@cTVCode varchar(30),@cOWhCode varchar(10),@cIWhCode varchar(10),@cTVMemo varchar(60)
+,@cMaker varchar(20),@cInvCode varchar(20),@cInvName varchar(60),@cInvStd varchar(60),@cTVBatch varchar(20)
+,@iTVQuantity float,@cInVouchCode varchar(30),@DatabaseName varchar(128),@cAcc_Name varchar(40),@CKH varchar(2),@OCKH varchar(2),@ICKH varchar(2)
+select @AutoID=AutoID,@TransVouchID=ID,@cTVCode=cTVCode,@cInVouchCode=cInVouchCode,@cInvCode=cInvCode,@cTVBatch=cTVBatch,@iTVQuantity=iTVQuantity 
+from inserted
+select @dTVDate=dTVDate,@cOWhCode=cOWhCode,@cIWhCode=cIWhCode,@cTVMemo=cTVMemo,@cMaker=cMaker from TransVouch where ID=@TransVouchID
+select @cInvName=cInvName,@cInvStd=cInvStd from Inventory where cInvCode=@cInvCode
+
+Select @DatabaseName=Name From Master.dbo.SysDataBases Where DbId=(Select Dbid From Master.dbo.SysProcesses Where Spid = @@spid)
+Select @cAcc_Name=cAcc_Name from UFSystem.dbo.UA_Account where cAcc_Id=substring(@DatabaseName,8,3)
+Select @OCKH=CKH from JLWSYN.dbo.GSDZB where cAcc_Name=@cAcc_Name and cWhCode=@cOWhCode
+Select @ICKH=CKH from JLWSYN.dbo.GSDZB where cAcc_Name=@cAcc_Name and cWhCode=@cIWhCode
+Select @cAcc_Name=GSMC,@CKH=CKH from JLWSYN.dbo.GSDZB where cAcc_Name=@cAcc_Name and cWhCode='05'
+
+insert into JLWSYN.dbo.RdRecords_Temp (RdRecordsID,RdRecordID,cCode,cMaker,dDate,cMemo,cInvName,cInvStd,cBatch,iQuantity,Operation,cAcc_Name,CKH,DelmFlag,OCKH,ICKH) values
+(@AutoID,@TransVouchID,@cTVCode,@cMaker,@dTVDate,@cTVMemo,@cInvName,@cInvStd,@cTVBatch,@iTVQuantity,15,@cAcc_Name,@CKH,0,@OCKH,@ICKH)
