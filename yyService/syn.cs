@@ -16,6 +16,9 @@ using System.Linq;
 using System.Runtime.InteropServices;
 namespace yyService
 {
+    /// <summary>
+    /// syn类是用于提供优时同步用友操作函数的。当前包括运交单同步到用友的销售出库单的增删改功能。
+    /// </summary>
     class syn
     {
 
@@ -63,10 +66,12 @@ namespace yyService
                 com.Connection = conn;
                 com.Transaction = stc;
                 read = com.ExecuteReader();
-                String dbname = "", ZTH = read["ZTH"].ToString();
+                String dbname = "", ZTH=null; 
                 while (read.Read())
                 {
+                    ZTH = read["ZTH"].ToString();
                     dbname = "UFDATA_" +ZTH+ "_" + data;
+                    read.Close();
                     break;
                 }
                 read.Close();
@@ -149,11 +154,31 @@ namespace yyService
                     Console.WriteLine("相关条数为0，开始插入新出库单");
 
                     //获取单号
-                    if (CKH == "401" || CKH=="301")
+                    String cSeed = null;
+                    if (ZTH == "401")
                     {
-                        query = "select * from VoucherHistory Where CardNumber='0303' and cContent='仓库' and cSeed='5' ";
+                        if (CKH == "04")
+                            cSeed = "5";
+                        if (CKH == "03")
+                            cSeed = "8";
                     }
-                    else if (CKH == "105")
+                    if (ZTH == "301")
+                    {
+                        if (CKH == "01")
+                            cSeed = "08";
+                        if (CKH == "02")
+                            cSeed = "05";
+                    }
+                    bool serchFlag = true;
+                    if (ZTH == "401")
+                    {
+                        query = "select * from VoucherHistory Where CardNumber='0303' and cContent='仓库' and cSeed='"+cSeed+"' ";
+                    }
+                    if (ZTH == "301")
+                    {
+                        query = "select * from VoucherHistory Where CardNumber='0303' and cContent='仓库' and cSeed='" + cSeed + "' ";
+                    }
+                    else if (ZTH == "105")
                     {
                         query = "select * from VoucherHistory Where iRdFlagSeed='2' and cContent is null ";
                     }
@@ -163,29 +188,55 @@ namespace yyService
                     {
                         code_temp = read["cNumber"].ToString();
                     }
+                    else
+                    {
+                        serchFlag = false;
+                        code_temp = "0";
+                    }
                     read.Close();
                     //int tmp=Integer.valueOf(code_temp).intValue()+1;
                     int tem = int.Parse(code_temp);
                     tem++;
                     //String s=String.valueOf(tmp);
                     string s = tem.ToString();
-                    if (CKH == "401" || CKH == "301")
+                    if (ZTH == "401")
                     {
-                        cCode = "5";
+                        if(CKH == "04")
+                            cCode = "5";
+                        if (CKH == "03")
+                            cCode = "8";
                     }
-                    else if (CKH == "105")
+                    if (ZTH == "301")
+                    {
+                        if (CKH == "01")
+                            cCode = "08";
+                        if (CKH == "02")
+                            cCode = "05";
+                    }
+                    else if (ZTH == "105")
                     {
                         cCode = "0";
                     }
-                    cCode = "5";
-                    for (int i = 0; i < 9 - s.Length; i++)
+                    //cCode = "5";
+                    int tempint = cCode.Length;
+                    for (int i = 0; i < 10 -tempint - s.Length; i++)
                         cCode += "0";
                     cCode += s;
-                    if (CKH == "401" || CKH == "301")
+                    if (ZTH == "401")
                     {
-                        query = "Update VoucherHistory set cNumber='" + s + "' Where CardNumber='0303' and cContent='仓库' and cSeed='5'";
+                        if(serchFlag)
+                            query = "Update VoucherHistory set cNumber='" + s + "' Where CardNumber='0303' and cContent='仓库' and cSeed='" + cSeed + "'";
+                        else
+                            query = "insert into VoucherHistory (cNumber,CardNumber,cContent,cSeed) values('1','0303','仓库','"+cSeed+"')";
                     }
-                    else if (CKH == "105")
+                    if (ZTH == "301")
+                    {
+                        if (serchFlag)
+                            query = "Update VoucherHistory set cNumber='" + s + "' Where CardNumber='0303' and cContent='仓库' and cSeed='" + cSeed + "'";
+                        else
+                            query = "insert into VoucherHistory (cNumber,CardNumber,cContent,cSeed) values('1','0303','仓库','" + cSeed + "')";
+                    }
+                    else if (ZTH == "105")
                     {
                         query = "Update VoucherHistory set cNumber='" + s + "'  Where iRdFlagSeed='2' and cContent is null ";
                     }
@@ -424,7 +475,7 @@ namespace yyService
                 if (DjBth == -1)
                 {
                     Console.WriteLine("检测到云交单废弃，开始删除出库单");
-                    String query = "select * from MXDZB where DjLsh=" + DjLsh;
+                    String query = "select * from MXDZB where DjLsh=" + DjLsh+" order by DjBth desc";
                     //com.CommandText = query;
                     com = new SqlCommand(query, conn);
                     com.Connection = conn;
@@ -458,17 +509,21 @@ namespace yyService
                             stc2 = con2.BeginTransaction(System.Data.IsolationLevel.ReadCommitted, "SQLTransaction");
                         }
                         kk++;
-                        del = "delete from Rdrecords where id=" + id + " and autoId=" + autoid;
-                        com2 = new SqlCommand(del, con2);
-                        com2.Connection = con2;
-                        com2.Transaction = stc2;
-                        com2.ExecuteNonQuery();
-                        Console.WriteLine("子表删除完毕");
 
-                        del = "Update  CurrentStock Set  iQuantity =iQuantity+" + iQuantity + " Where cWhcode='05'  And  cInvCode ='" + cInvCode + "' And cFree1 ='' And cFree2 ='' And cFree3 ='' And cFree4 ='' And cFree5 ='' And cFree6 ='' And cFree7 ='' And cFree8 ='' And cFree9 ='' And cFree10 =''  And cBatch ='" + cBatch + "' ";
-                        com2.CommandText = del;
-                        com2.ExecuteNonQuery();
-                        Console.WriteLine("库存更新完毕");
+                        if (DjBth2 > 0)
+                        {
+                            del = "delete from Rdrecords where id=" + id + " and autoId=" + autoid;
+                            com2 = new SqlCommand(del, con2);
+                            com2.Connection = con2;
+                            com2.Transaction = stc2;
+                            com2.ExecuteNonQuery();
+                            Console.WriteLine("子表删除完毕");
+
+                            del = "Update  CurrentStock Set  iQuantity =iQuantity+" + iQuantity + " Where cWhcode='05'  And  cInvCode ='" + cInvCode + "' And cFree1 ='' And cFree2 ='' And cFree3 ='' And cFree4 ='' And cFree5 ='' And cFree6 ='' And cFree7 ='' And cFree8 ='' And cFree9 ='' And cFree10 =''  And cBatch ='" + cBatch + "' ";
+                            com2.CommandText = del;
+                            com2.ExecuteNonQuery();
+                            Console.WriteLine("库存更新完毕");
+                        }
                         del = "delete from JLWSYN..MXDZB where DjLsh=" + DjLsh + " and DjBth=" + DjBth2;
                         com2.CommandText = del;
                         //com2 = new SqlCommand(del, con2);

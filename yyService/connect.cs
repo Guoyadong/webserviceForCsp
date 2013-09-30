@@ -12,7 +12,9 @@ using System.Threading;
 
 namespace yyService
 {
-
+    /// <summary>
+    /// 
+    /// </summary>
     class connect
     {
         // webservice 对象

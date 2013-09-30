@@ -26,7 +26,7 @@ namespace yyService.Properties {
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.SpecialSettingAttribute(global::System.Configuration.SpecialSetting.WebServiceUrl)]
-        [global::System.Configuration.DefaultSettingValueAttribute("http://192.168.1.128/GuobangWebservice/services/DBupdate")]
+        [global::System.Configuration.DefaultSettingValueAttribute("http://192.168.1.137/GuobangWebservice/services/DBupdate")]
         public string yyService_DBupdate_DBupdateService {
             get {
                 return ((string)(this["yyService_DBupdate_DBupdateService"]));
@@ -36,7 +36,7 @@ namespace yyService.Properties {
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.SpecialSettingAttribute(global::System.Configuration.SpecialSetting.WebServiceUrl)]
-        [global::System.Configuration.DefaultSettingValueAttribute("http://192.168.1.128/GuobangWebservice/services/DBupdate")]
+        [global::System.Configuration.DefaultSettingValueAttribute("http://192.168.1.107:8080/gbws/services/DBupdate")]
         public string yyService_DBupdate1_DBupdateService {
             get {
                 return ((string)(this["yyService_DBupdate1_DBupdateService"]));

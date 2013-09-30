@@ -175,10 +175,10 @@
     <WebReferences Include="Web References\" />
   </ItemGroup>
   <ItemGroup>
-    <WebReferenceUrl Include="http://192.168.1.128/GuobangWebservice/services/DBupdate%3fwsdl">
+    <WebReferenceUrl Include="http://192.168.1.107:8080/gbws/services/DBupdate%3fwsdl">
       <UrlBehavior>Dynamic</UrlBehavior>
       <RelPath>Web References\DBupdate1\</RelPath>
-      <UpdateFromURL>http://192.168.1.128/GuobangWebservice/services/DBupdate%3fwsdl</UpdateFromURL>
+      <UpdateFromURL>http://192.168.1.107:8080/gbws/services/DBupdate%3fwsdl</UpdateFromURL>
       <ServiceLocationURL>
       </ServiceLocationURL>
       <CachedDynamicPropName>
@@ -190,6 +190,7 @@
   <ItemGroup>
     <Content Include="config.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
     </Content>
     <Content Include="_start.ico">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>

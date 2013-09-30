@@ -6,7 +6,7 @@
   <password>sa</password>
   <ip>192.168.1.123</ip>
   <port>1433</port>
-  <serverIp>192.168.1.128</serverIp>
-  <serverPort>80</serverPort>
+  <serverIp>192.168.1.107</serverIp>
+  <serverPort>8080</serverPort>
   <sleeptime>1000</sleeptime>
 </dataconfig>
