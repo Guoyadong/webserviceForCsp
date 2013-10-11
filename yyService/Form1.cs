@@ -233,6 +233,7 @@
             catch (WebException e)
             {
                 //sw.Close();
+                MessageBox.Show("服务端异常异常代码：\r\n"+e.ToString());
                 SendMessage(this.Handle, IM_closed, 80, 0);
             }
             catch (SqlException e)
@@ -253,8 +254,9 @@
 
             catch (Exception e)
             {
-                SendMessage(this.Handle, IM_closed, 80, 0);
                 MessageBox.Show(e.ToString());
+                SendMessage(this.Handle, IM_closed, 80, 0);
+                
             }
 
 
